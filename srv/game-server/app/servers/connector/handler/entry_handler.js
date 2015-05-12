@@ -16,7 +16,6 @@ var Handler = function(app) {
  * @return {Void}
  */
 Handler.prototype.entry = function(msg, session, next) {
-  console.log('game server is ok.');
   var session = null;
   message_mgr.trigger(msg.msg_id,msg,session,function(error,res_msg){
     next(null, res_msg);
