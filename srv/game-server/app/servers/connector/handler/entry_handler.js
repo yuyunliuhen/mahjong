@@ -1,3 +1,4 @@
+var message_mgr = require('../../../util/message_mgr');
 module.exports = function(app) {
   return new Handler(app);
 };
@@ -15,5 +16,14 @@ var Handler = function(app) {
  * @return {Void}
  */
 Handler.prototype.entry = function(msg, session, next) {
-  next(null, {code: 200, msg: 'game server is ok.'});
+  console.log('game server is ok.');
+  var session = null;
+  message_mgr.trigger(msg.msg_id,msg,session,function(error,res_msg){
+    next(null, res_msg);
+  });
+};
+
+Handler.prototype.hello = function(msg, session, next) {
+  console.log('hi.');
+  next(null, {code: 200, msg: 'hi.'});
 };

@@ -1,12 +1,24 @@
 {
   "development":{
     "connector": [
-    {"id": "connector-server-1", "host": "127.0.0.1", "port": 3150, "clientPort": 3010, "frontend": true}
+      {"id": "connector-server-1", "host": "127.0.0.1", "port": 3150, "clientPort": 3010, "frontend": true, "args": "--debug=20888"}
+    ],
+    "lobby": [
+      {"id": "lobby-server-1", "host": "127.0.0.1", "port": 3160, "args": "--debug=20999"}
+    ],
+    "game": [
+      {"id": "game-server-1", "host": "127.0.0.1", "port": 3170}
     ]
   },
   "production":{
     "connector": [
-    {"id": "connector-server-1", "host": "127.0.0.1", "port": 3150, "clientPort": 3010, "frontend": true}
+      {"id": "connector-server-1", "host": "127.0.0.1", "port": 3150, "clientPort": 3010, "frontend": true}
+    ],
+    "lobby": [
+      {"id": "lobby-server-1", "host": "127.0.0.1", "port": 3160}
+    ],
+    "game": [
+      {"id": "game-server-1", "host": "127.0.0.1", "port": 3170}
     ]
   }
 }
