@@ -1,5 +1,5 @@
 var pomelo = require('pomelo');
-
+var user_wrapper = require('./app/user/user_wrapper');
 /**
  * Init app for client.
  */
@@ -19,6 +19,9 @@ app.configure('production|development', 'connector', function(){
   app.loadConfig('redis', app.getBase() + '/config/redis.json');
   console.log("config load for redis  %s", app.getBase() + '/config/redis.json');
   require('./app/nosql/redis_pools').configure(app.get('redis'));
+
+  var __user_wrapper = new user_wrapper();
+  app.set('user_wrapper',__user_wrapper);
 });
 
 // start app
