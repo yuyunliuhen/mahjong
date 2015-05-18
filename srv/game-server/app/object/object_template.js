@@ -11,16 +11,16 @@ var object_template = function(){
 module.exports = object_template;
 
 object_template.create_object = function(type){
-    var __object = null;
+    var object = null;
     if('object_user' == type){
-        __object = object_template.create_object_user();
+        object = object_template.create_object_user();
     }
-    return __object;
+    return object;
 };
 
 object_template.create_object_user = function(){
-    var __object_user = new object_user();
-    __object_user.reg_attr('name',"");
-    __object_user.reg_attr('rid',0);
-    return __object_user;
+    var object_user = new object_user();
+    object_user.reg_attr('username',"");
+    object_user.reg_attr('rid',0);
+    return object_user;
 };

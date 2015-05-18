@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "type":0,
+    "watcher":4,
+    "max_room_num": 120
+  },
+  {
+    "id": 2,
+    "type":0,
+    "watcher":4,
+    "max_room_num": 120
+  },
+  {
+    "id": 3,
+    "type":1,
+    "watcher":4,
+    "max_room_num": 120
+  }
+]

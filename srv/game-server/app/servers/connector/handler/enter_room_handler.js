@@ -7,8 +7,8 @@ var pomelo = require('pomelo');
 
 message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_ENTER_ROOM, function(msg, session, next) {
     var rid = msg.rid;
-    var name = msg.name;
-    var uid = msg.name + '*' + rid;
+    var username = msg.username;
+    var uid = username + '*' + rid;
     var sessionService = pomelo.app.get('sessionService');
     //duplicate log in
     if( !! sessionService.getByUid(uid)) {
