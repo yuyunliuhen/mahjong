@@ -27,7 +27,7 @@ namespace mahjong {
 		void	do_request_login();
 
 		//	enter room
-		void	do_request_enter_room(const char* __name,int __rid);
+		void	do_request_enter_room(const char* __username,int __rid);
 
 		//	send a message to somebody
 		void	do_request_chat(const char* __target_name,const char* __context);
