@@ -4,7 +4,6 @@
 var message_mgr = require('../../../util/message_mgr');
 var consts = require('../../../util/consts');
 var pomelo = require('pomelo');
-var user_wrapper = require('../../../nosql/user_wrapper');
 
 message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_ENTER_ROOM, function(msg, session, next) {
     var rid = msg.rid;

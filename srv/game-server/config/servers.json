@@ -5,9 +5,6 @@
     ],
     "lobby": [
       {"id": "lobby-server-1", "host": "127.0.0.1", "port": 3160, "args": "--debug=20999"}
-    ],
-    "game": [
-      {"id": "game-server-1", "host": "127.0.0.1", "port": 3170}
     ]
   },
   "production":{
@@ -16,9 +13,6 @@
     ],
     "lobby": [
       {"id": "lobby-server-1", "host": "127.0.0.1", "port": 3160}
-    ],
-    "game": [
-      {"id": "game-server-1", "host": "127.0.0.1", "port": 3170}
     ]
   }
 }

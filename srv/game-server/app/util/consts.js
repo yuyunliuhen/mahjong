@@ -10,5 +10,9 @@ module.exports = {
     },
     TYPE_REMOTE_LOBBY:{
         TYPE_REMOTE_LOBBY_TEST :101
+    },
+    TYPE_LOBBY:{
+        TYPE_LOBBY_NORMAL:0,
+        TYPE_LOBBY_PERSONAL:1
     }
 };
