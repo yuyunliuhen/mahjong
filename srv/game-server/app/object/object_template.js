@@ -19,8 +19,14 @@ object_template.create_object = function(type){
 };
 
 object_template.create_object_user = function(){
-    var object_user = new object_user();
-    object_user.reg_attr('username',"");
-    object_user.reg_attr('rid',0);
-    return object_user;
+    var __object_user = new object_user();
+    __object_user.reg_attr('username',"");
+    __object_user.reg_attr('nickname',"");
+    __object_user.reg_attr('sex',0);
+    __object_user.reg_attr('gold',0);
+    __object_user.reg_attr('total_count',0);
+    __object_user.reg_attr('win_count',0);
+    __object_user.reg_attr('level',0);
+    console.log("%j",__object_user);
+    return __object_user;
 };

@@ -24,6 +24,23 @@ app.configure('production|development', 'connector', function(){
   app.set('user_wrapper',__user_wrapper);
 });
 
+var router = function(routeParam, msg, context, cb) {
+  var  servers_asc = function(a,b){
+    if (a.no > b.no)
+      return 1;
+    if (a.no < b.no)
+      return -1;
+  };
+  var servers = app.getServersByType('mahjong');
+  console.log(servers);
+  servers.sort(servers_asc);
+  console.log(servers);
+  var id = servers[routeParam % servers.length].id;
+  cb(null, id);
+};
+
+app.route('mahjong', router);
+
 // start app
 app.start();
 

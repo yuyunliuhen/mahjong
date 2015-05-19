@@ -3,16 +3,30 @@
     "id": 1,
     "type":0,
     "watcher":4,
-    "max_room_num": 120
+    "max_room_num": 120,
+    "desc":"´óÌü"
   },
   {
     "id": 2,
-    "type":0,
+    "type":1,
+    "watcher":4,
+    "max_room_num": 120,
+    "desc":"»áËù"
+  },
+  {
+    "id": 3,
+    "type":1,
     "watcher":4,
     "max_room_num": 120
   },
   {
-    "id": 3,
+    "id": 4,
+    "type":1,
+    "watcher":4,
+    "max_room_num": 120
+  },
+  {
+    "id": 5,
     "type":1,
     "watcher":4,
     "max_room_num": 120

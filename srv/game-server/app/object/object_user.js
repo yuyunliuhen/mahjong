@@ -13,7 +13,7 @@ util.inherits(object_user, object);
 
 module.exports = object_user;
 
-object_user.prototype.init = function(name){
+object_user.prototype.init = function(username){
     this.set_attr('username',username);
 };
 

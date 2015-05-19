@@ -1,10 +1,15 @@
 {
   "development":{
     "connector": [
-      {"id": "connector-server-1", "host": "127.0.0.1", "port": 3150, "clientPort": 3010, "frontend": true, "args": "--debug=20888"}
+      {"id": "connector-server-1", "host": "127.0.0.1", "port": 3150, "clientPort": 3010, "frontend": true, "args": "--debug=20100"}
     ],
     "lobby": [
-      {"id": "lobby-server-1", "host": "127.0.0.1", "port": 3160, "args": "--debug=20999"}
+      {"id": "lobby-server-1", "host": "127.0.0.1", "port": 3160, "args": "--debug=20200"}
+    ],
+    "mahjong": [
+      {"id": "mahjong-server-1", "host": "127.0.0.1", "port": 31670, "no":1, "args": "--debug=20300"},
+      {"id": "mahjong-server-2", "host": "127.0.0.1", "port": 31671, "no":2, "args": "--debug=20301"},
+      {"id": "mahjong-server-3", "host": "127.0.0.1", "port": 31672, "no":3, "args": "--debug=20302"}
     ]
   },
   "production":{
@@ -13,6 +18,11 @@
     ],
     "lobby": [
       {"id": "lobby-server-1", "host": "127.0.0.1", "port": 3160}
+    ],
+    "mahjong": [
+      {"id": "mahjong-server-1", "host": "127.0.0.1", "port": 31670},
+      {"id": "mahjong-server-2", "host": "127.0.0.1", "port": 31671},
+      {"id": "mahjong-server-3", "host": "127.0.0.1", "port": 31672}
     ]
   }
 }

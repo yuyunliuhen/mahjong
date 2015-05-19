@@ -11,6 +11,7 @@ var json_lobby_list = require('../../../../config/lobby_list');
 message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_LOGIN, function(msg, session, next) {
     var username = msg.username;
     var res_msg = {};
+    res_msg.msg_id = msg.msg_id;
     //  get user from redis, if user exists, get the user data, else create a new user and save user data to redis!
     pomelo.app.get('user_wrapper').get_user(username,function(user_data){
         var object_user = null;

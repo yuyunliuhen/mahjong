@@ -2,7 +2,7 @@
  * Created by Administrator on 2015/5/18.
  */
 var data = function(){
-    this.attr = [];
+    this.attr = {};
 };
 
 module.exports = data;
