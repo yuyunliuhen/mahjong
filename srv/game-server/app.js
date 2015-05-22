@@ -1,5 +1,6 @@
 var pomelo = require('pomelo');
 var user_wrapper = require('./app/user/user_wrapper');
+var lobby_manager = require('./app/lobby_logic/lobby_manager');
 /**
  * Init app for client.
  */
@@ -24,6 +25,11 @@ app.configure('production|development', 'connector', function(){
   app.set('user_wrapper',__user_wrapper);
 });
 
+app.configure('production|development', 'lobby', function(){
+  var __lobby_manager= new lobby_manager();
+  app.set('lobby_manager',__lobby_manager);
+});
+
 var router = function(routeParam, msg, context, cb) {
   var  servers_asc = function(a,b){
     if (a.no > b.no)
@@ -32,9 +38,7 @@ var router = function(routeParam, msg, context, cb) {
       return -1;
   };
   var servers = app.getServersByType('mahjong');
-  console.log(servers);
   servers.sort(servers_asc);
-  console.log(servers);
   var id = servers[routeParam % servers.length].id;
   cb(null, id);
 };

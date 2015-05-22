@@ -1,0 +1,47 @@
+﻿[
+    {
+        "id": 1,
+        "chip": 200,
+        "cost": 100,
+        "min_gold": 600,
+        "max_gold": 20000,
+        "name": "新手场",
+        "note": "6百~2万"
+    },
+    {
+        "id": 2,
+        "chip": 1000,
+        "cost": 500,
+        "min_gold": 3000,
+        "max_gold": 50000,
+        "name": "平民场",
+        "note": "3千~5万"
+    },
+    {
+        "id": 3,
+        "chip": 5000,
+        "cost": 1000,
+        "min_gold": 20000,
+        "max_gold": -1,
+        "name": "土豪场",
+        "note": "2万以上"
+    },
+    {
+        "id": 4,
+        "chip": 10000,
+        "cost": 2000,
+        "min_gold": 50000,
+        "max_gold": -1,
+        "name": "巨商场",
+        "note": "5万以上"
+    },
+    {
+        "id": 5,
+        "chip": 50000,
+        "cost": 5000,
+        "min_gold": 200000,
+        "max_gold": -1,
+        "name": "王侯场",
+        "note": "20万以上"
+    }
+]

@@ -12,23 +12,5 @@
     "watcher":4,
     "max_room_num": 120,
     "desc":"»áËù"
-  },
-  {
-    "id": 3,
-    "type":1,
-    "watcher":4,
-    "max_room_num": 120
-  },
-  {
-    "id": 4,
-    "type":1,
-    "watcher":4,
-    "max_room_num": 120
-  },
-  {
-    "id": 5,
-    "type":1,
-    "watcher":4,
-    "max_room_num": 120
   }
 ]

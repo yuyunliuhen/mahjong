@@ -21,6 +21,12 @@ lobby_remote.prototype.add = function(uid, sid, name, flag, cb) {
         route: 'onAdd',
         user: username
     };
+    //  lid_1_rid_1
+    if('rid' == name.split('_')[2]){
+
+    }else{
+
+    }
     channel.pushMessage(param);
     if( !! channel) {
         channel.add(uid, sid);
@@ -53,4 +59,17 @@ lobby_remote.prototype.kick = function(uid, sid, name, cb) {
     };
     channel.pushMessage(param);
     cb();
+};
+
+lobby_remote.prototype.region_list = function(uid, sid, name, cb) {
+    var lobby_manager = pomelo.app.get('lobby_manager');
+    var lid = parseInt(name.split('_')[1]);
+    cb(lobby_manager.get_region_list(lid));
+};
+
+lobby_remote.prototype.enter_game = function(lid,rid,username,sid,cb) {
+    var lobby_manager = pomelo.app.get('lobby_manager');
+    lobby_manager.enter_game(lid,rid,username,sid,function(success){
+        cb(success);
+    });
 };
