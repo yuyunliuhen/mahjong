@@ -42,18 +42,20 @@ table_wrapper.prototype.enter_game = function(username,sid){
 
 table_wrapper.prototype.enter_game_notice = function(username){
     var channelService = pomelo.app.get('channelService');
-    var channel_name =  'lid_' + this.lid + '_rid_' + this.rid;
+    var channel_name =  'lid_' + this.lid;
     var channel = channelService.getChannel(channel_name, false);
+    var res_msg = {};
+    res_msg.msg_id = consts.TYPE_MSG.TYPE_MSG_ENTER_GAME;
     var param = {
         route: 'on_msg',
-        msg_id: consts.TYPE_MSG_ENTER_GAME,
+        msg: res_msg,
         from: username,
         target: username
     };
     for(var i = 0; i < this.joiner_list.length; ++i){
         var player_wrapper = this.joiner_list[i];
         if(player_wrapper){
-            if(/*player_wrapper.username() != username*/true)
+            //if(player_wrapper.get_username() != username)
             {
                 var tuid = player_wrapper.get_uid();
                 var tsid = channel.getMember(tuid)['sid'];

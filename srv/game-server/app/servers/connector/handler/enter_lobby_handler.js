@@ -10,13 +10,15 @@ message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_ENTER_LOBBY, function(msg, session,
     var lid = msg.lid;
     var uid = msg.username + '*';
     var sessionService = pomelo.app.get('sessionService');
-    //duplicate log in
-    if( !! sessionService.getByUid(uid)) {
-        next(null, {
-            code: 500,
-            error: true
-        });
-        return;
+    if(0){
+        //duplicate log in
+        if( !! sessionService.getByUid(uid)) {
+            next(null, {
+                code: 500,
+                error: true
+            });
+            return;
+        }
     }
     session.bind(uid);
     session.set('lid', 'lid_' + lid);

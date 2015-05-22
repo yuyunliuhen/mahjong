@@ -9,7 +9,9 @@ module.exports = {
         TYPE_MSG_ENTER_ROOM:3,
         TYPE_MSG_ENTER_LOBBY:4,
         TYPE_MSG_GET_CHARGE_LIST:5,
-        TYPE_MSG_ENTER_GAME:6
+        TYPE_MSG_ENTER_GAME:6,
+        TYPE_MSG_LEAVE_LOBBY:7,
+        TYPE_MSG_LEAVE_ROOM:8
     },
 
     TYPE_REMOTE_LOBBY:{

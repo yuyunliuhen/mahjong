@@ -67,9 +67,21 @@ lobby_remote.prototype.region_list = function(uid, sid, name, cb) {
     cb(lobby_manager.get_region_list(lid));
 };
 
-lobby_remote.prototype.enter_game = function(lid,rid,username,sid,cb) {
+lobby_remote.prototype.enter_room = function(lid,rid,username,cb) {
     var lobby_manager = pomelo.app.get('lobby_manager');
-    lobby_manager.enter_game(lid,rid,username,sid,function(success){
+    lobby_manager.enter_room(lid,rid,username,sid,function(success){
         cb(success);
     });
+};
+
+lobby_remote.prototype.leave_room = function(lid,rid,username,cb) {
+    var lobby_manager = pomelo.app.get('lobby_manager');
+    lobby_manager.enter_room(lid,rid,username,sid,function(success){
+        cb(success);
+    });
+};
+
+lobby_remote.prototype.enter_game = function(lid,rid,username) {
+    var lobby_manager = pomelo.app.get('lobby_manager');
+    lobby_manager.enter_game(lid,rid,username);
 };
