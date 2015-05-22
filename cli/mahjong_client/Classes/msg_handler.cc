@@ -70,13 +70,13 @@ namespace mahjong{
 		mahjong::NetImpl::instance()->do_notify(__route,__msg);
 	}
 
-	void MsgHandler::do_request_login()
+	void MsgHandler::do_request_login(const char* __username)
 	{
 		// compose request
 		const char* __route = __route_request_connector_enter;
 		json_t* __msg = json_object();
 		json_t* __msg_id = json_integer(MSG_ID_LOGIN);
-		json_t* __msg_username = json_string("aaa");
+		json_t* __msg_username = json_string(__username);
 		json_t* __msg_pwd = json_string("111");
 		json_object_set(__msg, "msg_id", __msg_id);
 		json_object_set(__msg, "username", __msg_username);
@@ -88,7 +88,7 @@ namespace mahjong{
 		mahjong::NetImpl::instance()->do_request(__route,__msg);
 	}
 
-	void MsgHandler::do_request_enter_room( const char* __username,int __rid )
+	void MsgHandler::do_request_enter_room( const char* __username,int __lid,int __rid )
 	{
 		// compose request
 		const char* __route = __route_request_connector_enter;
@@ -96,12 +96,36 @@ namespace mahjong{
 		json_t* __msg_id = json_integer(MSG_ID_ENTER_ROOM);
 		json_t* __msg_username = json_string(__username);
 		json_t* __msg_rid = json_integer(__rid);
+		json_t* __msg_lid = json_integer(__lid);
 		json_object_set(__msg, "msg_id", __msg_id);
 		json_object_set(__msg, "username", __msg_username);
+		json_object_set(__msg, "lid", __msg_lid);
 		json_object_set(__msg, "rid", __msg_rid);
 		// decref for json object
 		json_decref(__msg_id);
 		json_decref(__msg_username);
+		json_decref(__msg_lid);
+		json_decref(__msg_rid);
+		mahjong::NetImpl::instance()->do_request(__route,__msg);
+	}
+
+	void MsgHandler::do_request_enter_game( const char* __username,int __lid,int __rid )
+	{
+		// compose request
+		const char* __route = __route_request_connector_enter;
+		json_t* __msg = json_object();
+		json_t* __msg_id = json_integer(MSG_ID_ENTER_GAME);
+		json_t* __msg_username = json_string(__username);
+		json_t* __msg_rid = json_integer(__rid);
+		json_t* __msg_lid = json_integer(__lid);
+		json_object_set(__msg, "msg_id", __msg_id);
+		json_object_set(__msg, "username", __msg_username);
+		json_object_set(__msg, "lid", __msg_lid);
+		json_object_set(__msg, "rid", __msg_rid);
+		// decref for json object
+		json_decref(__msg_id);
+		json_decref(__msg_username);
+		json_decref(__msg_lid);
 		json_decref(__msg_rid);
 		mahjong::NetImpl::instance()->do_request(__route,__msg);
 	}
@@ -111,7 +135,7 @@ namespace mahjong{
 		// compose request
 		const char* __route = __route_request_lobby_enter;
 		json_t* __msg = json_object();
-		json_t* __msg_id = json_integer(MSG_ID_CHAT);
+		json_t* __msg_id = json_integer(0);
 		json_t* __msg_target_name = json_string(__target_name);
 		json_t* __msg_content = json_string(__context);
 		json_t* __msg_route = json_string(__route);
@@ -124,6 +148,24 @@ namespace mahjong{
 		json_decref(__msg_target_name);
 		json_decref(__msg_content);
 		json_decref(__msg_route);
+		mahjong::NetImpl::instance()->do_request(__route,__msg);
+	}
+
+	void MsgHandler::do_request_enter_lobby( const char* __username,int __lid )
+	{
+		// compose request
+		const char* __route = __route_request_connector_enter;
+		json_t* __msg = json_object();
+		json_t* __msg_id = json_integer(MSG_ID_ENTER_LOBBY);
+		json_t* __msg_username = json_string(__username);
+		json_t* __msg_lid = json_integer(__lid);
+		json_object_set(__msg, "msg_id", __msg_id);
+		json_object_set(__msg, "username", __msg_username);
+		json_object_set(__msg, "lid", __msg_lid);
+		// decref for json object
+		json_decref(__msg_id);
+		json_decref(__msg_username);
+		json_decref(__msg_lid);
 		mahjong::NetImpl::instance()->do_request(__route,__msg);
 	}
 

@@ -24,10 +24,16 @@ namespace mahjong {
 		void	do_notice_test();
 
 		//	client login
-		void	do_request_login();
+		void	do_request_login(const char* __username);
 
 		//	enter room
-		void	do_request_enter_room(const char* __username,int __rid);
+		void	do_request_enter_room(const char* __username,int __rid,int __lid);
+
+		//	enter lobby
+		void	do_request_enter_lobby(const char* __username,int __lid);
+
+		//	enter game
+		void	do_request_enter_game(const char* __username,int __rid,int __lid);
 
 		//	send a message to somebody
 		void	do_request_chat(const char* __target_name,const char* __context);

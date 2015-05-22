@@ -89,10 +89,13 @@ bool HelloWorld::init()
 	_editName->setReturnType(ui::EditBox::KeyboardReturnType::DONE);
 	addChild(_editName);
 
-
-	mahjong::MsgHandler::instance()->do_request_test();
-	mahjong::MsgHandler::instance()->do_notice_test();
-	mahjong::MsgHandler::instance()->do_request_login();
+	const char* __username = "lee";
+	//mahjong::MsgHandler::instance()->do_request_test();
+	//mahjong::MsgHandler::instance()->do_notice_test();
+	mahjong::MsgHandler::instance()->do_request_login(__username);
+	mahjong::MsgHandler::instance()->do_request_enter_lobby(__username,1);
+	mahjong::MsgHandler::instance()->do_request_enter_room(__username,1,1);
+	mahjong::MsgHandler::instance()->do_request_enter_game(__username,1,1);
 
     return true;
 }
@@ -112,8 +115,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 		const char* __text = _editName->getText();
 		if (__text)
 		{
-			mahjong::MsgHandler::instance()->do_request_enter_room(__text,1);
-			mahjong::MsgHandler::instance()->do_request_chat("lee","hi,everyone!");
+			//mahjong::MsgHandler::instance()->do_request_chat("lee","hi,everyone!");
 		}
 	}
 
