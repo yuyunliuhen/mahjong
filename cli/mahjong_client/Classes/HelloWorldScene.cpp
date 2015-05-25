@@ -83,19 +83,76 @@ bool HelloWorld::init()
 	_editName->setFontName("Paint Boy");
 	_editName->setFontSize(25);
 	_editName->setFontColor(Color3B::RED);
+	_editName->setText("lee");
 	_editName->setPlaceHolder("Name:");
 	_editName->setPlaceholderFontColor(Color3B::WHITE);
 	_editName->setMaxLength(8);
 	_editName->setReturnType(ui::EditBox::KeyboardReturnType::DONE);
 	addChild(_editName);
 
+	MenuItemFont *__login_item = MenuItemFont::create(  
+		"login",  
+		this,  
+		menu_selector(HelloWorld::loginCallback)); 
+
+	MenuItemFont *__enter_lobby = MenuItemFont::create(  
+		"enter lobby",  
+		this,  
+		menu_selector(HelloWorld::enterLobbyCallback)); 
+
+	MenuItemFont *__leave_lobby = MenuItemFont::create(  
+		"leave lobby",  
+		this,  
+		menu_selector(HelloWorld::leaveLobbyCallback)); 
+
+	MenuItemFont *__enter_room = MenuItemFont::create(  
+		"enter room",  
+		this,  
+		menu_selector(HelloWorld::enterRoomCallback));
+
+	MenuItemFont *__enter_game = MenuItemFont::create(  
+		"enter game",  
+		this,  
+		menu_selector(HelloWorld::enterGameCallback));
+
+	float __border_width = 0;  
+	float __current_y_border = origin.y + visibleSize.height; 
+	float __offset = __border_width + __login_item->getContentSize().height/2; 
+
+	__current_y_border -= 2 * __offset;  
+	__login_item->setPosition(ccp(origin.x + __login_item->getContentSize().width/2 + __border_width,  
+		__current_y_border - __offset));  
+
+	__current_y_border -= 2 * __offset;  
+	__enter_lobby->setPosition(ccp(origin.x + __enter_lobby->getContentSize().width/2 + __border_width,  
+		__current_y_border - __offset)); 
+
+	__current_y_border -= 2 * __offset;  
+	__leave_lobby->setPosition(ccp(origin.x + __leave_lobby->getContentSize().width/2 + __border_width,  
+		__current_y_border - __offset)); 
+
+	__current_y_border -= 2 * __offset;  
+	__enter_room->setPosition(ccp(origin.x + __enter_room->getContentSize().width/2 + __border_width,  
+		__current_y_border - __offset));
+
+	__current_y_border -= 2 * __offset;  
+	__enter_game->setPosition(ccp(origin.x + __enter_game->getContentSize().width/2 + __border_width,  
+		__current_y_border - __offset));
+
+	Menu* __menu = Menu::create(__login_item,__enter_lobby,__leave_lobby,__enter_room,__enter_game,NULL);  
+	__menu->setPosition(20,-100);  
+	this->addChild(__menu,1,2); 
+
+#if 0
+	mahjong::MsgHandler::instance()->do_request_test();
+	mahjong::MsgHandler::instance()->do_notice_test();
 	const char* __username = "lee";
-	//mahjong::MsgHandler::instance()->do_request_test();
-	//mahjong::MsgHandler::instance()->do_notice_test();
 	mahjong::MsgHandler::instance()->do_request_login(__username);
 	mahjong::MsgHandler::instance()->do_request_enter_lobby(__username,1);
 	mahjong::MsgHandler::instance()->do_request_enter_room(__username,1,1);
 	mahjong::MsgHandler::instance()->do_request_enter_game(__username,1,1);
+#endif
+
 
     return true;
 }
@@ -106,20 +163,56 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 	MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.","Alert");
     return;
 #endif
-	if(0)
-	{
-		Director::getInstance()->end();
-	}
-	else
-	{
-		const char* __text = _editName->getText();
-		if (__text)
-		{
-			//mahjong::MsgHandler::instance()->do_request_chat("lee","hi,everyone!");
-		}
-	}
+
+	Director::getInstance()->end();
+
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
+}
+
+void HelloWorld::loginCallback( cocos2d::Ref* __sender )
+{
+	const char* __username = _editName->getText();
+	if (__username)
+	{
+		mahjong::MsgHandler::instance()->do_request_login(__username);
+	}
+}
+
+void HelloWorld::enterLobbyCallback( cocos2d::Ref* __sender )
+{
+	const char* __username = _editName->getText();
+	if (__username)
+	{
+		mahjong::MsgHandler::instance()->do_request_enter_lobby(__username,1);
+	}
+}
+
+void HelloWorld::enterRoomCallback( cocos2d::Ref* __sender )
+{
+	const char* __username = _editName->getText();
+	if (__username)	
+	{
+		mahjong::MsgHandler::instance()->do_request_enter_room(__username,1,1);
+	}
+}
+
+void HelloWorld::enterGameCallback( cocos2d::Ref* __sender )
+{
+	const char* __username = _editName->getText();
+	if (__username)
+	{
+		mahjong::MsgHandler::instance()->do_request_enter_game(__username,1,1);
+	}
+}
+
+void HelloWorld::leaveLobbyCallback( cocos2d::Ref* __sender )
+{
+	const char* __username = _editName->getText();
+	if (__username)
+	{
+		mahjong::MsgHandler::instance()->do_request_leave_lobby(__username,1);
+	}
 }

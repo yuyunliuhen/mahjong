@@ -32,6 +32,9 @@ namespace mahjong {
 		//	enter lobby
 		void	do_request_enter_lobby(const char* __username,int __lid);
 
+		//	leave lobby
+		void	do_request_leave_lobby(const char* __username,int __lid);
+
 		//	enter game
 		void	do_request_enter_game(const char* __username,int __rid,int __lid);
 

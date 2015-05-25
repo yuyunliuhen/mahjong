@@ -19,6 +19,16 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 
+	void loginCallback( cocos2d::Ref* __sender );
+
+	void enterLobbyCallback( cocos2d::Ref* __sender );
+
+	void leaveLobbyCallback( cocos2d::Ref* __sender );
+
+	void enterRoomCallback( cocos2d::Ref* __sender );
+
+	void enterGameCallback( cocos2d::Ref* __sender );
+
 private:
 	cocos2d::ui::EditBox* _editName;
 };

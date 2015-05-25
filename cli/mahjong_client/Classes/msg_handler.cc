@@ -169,5 +169,23 @@ namespace mahjong{
 		mahjong::NetImpl::instance()->do_request(__route,__msg);
 	}
 
+	void MsgHandler::do_request_leave_lobby( const char* __username,int __lid )
+	{
+		// compose request
+		const char* __route = __route_request_connector_enter;
+		json_t* __msg = json_object();
+		json_t* __msg_id = json_integer(MSG_ID_LEAVE_LOBBY);
+		json_t* __msg_username = json_string(__username);
+		json_t* __msg_lid = json_integer(__lid);
+		json_object_set(__msg, "msg_id", __msg_id);
+		json_object_set(__msg, "username", __msg_username);
+		json_object_set(__msg, "lid", __msg_lid);
+		// decref for json object
+		json_decref(__msg_id);
+		json_decref(__msg_username);
+		json_decref(__msg_lid);
+		mahjong::NetImpl::instance()->do_request(__route,__msg);
+	}
+
 }
 
