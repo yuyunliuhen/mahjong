@@ -1,5 +1,6 @@
 var pomelo = require('pomelo');
 var message_mgr = require('../../../util/message_mgr');
+var consts = require('../../../util/consts');
 
 module.exports = function(app) {
     return new lobby_remote(app);
@@ -21,12 +22,6 @@ lobby_remote.prototype.add = function(uid, sid, name, flag, cb) {
         route: 'onAdd',
         user: username
     };
-    //  lid_1_rid_1
-    if('rid' == name.split('_')[2]){
-
-    }else{
-
-    }
     channel.pushMessage(param);
     if( !! channel) {
         channel.add(uid, sid);
@@ -67,21 +62,12 @@ lobby_remote.prototype.region_list = function(uid, sid, name, cb) {
     cb(lobby_manager.get_region_list(lid));
 };
 
-lobby_remote.prototype.enter_room = function(lid,rid,username,cb) {
+lobby_remote.prototype.enter_game = function(lid,rid,username,sid,cb) {
     var lobby_manager = pomelo.app.get('lobby_manager');
-    lobby_manager.enter_room(lid,rid,username,sid,function(success){
-        cb(success);
-    });
+    lobby_manager.enter_game(lid,rid,username,sid,cb);
 };
 
-lobby_remote.prototype.leave_room = function(lid,rid,username,cb) {
+lobby_remote.prototype.pack_all_lobby_simple_data = function(cb) {
     var lobby_manager = pomelo.app.get('lobby_manager');
-    lobby_manager.enter_room(lid,rid,username,sid,function(success){
-        cb(success);
-    });
-};
-
-lobby_remote.prototype.enter_game = function(lid,rid,username) {
-    var lobby_manager = pomelo.app.get('lobby_manager');
-    lobby_manager.enter_game(lid,rid,username);
+    cb(JSON.stringify(lobby_manager.pack_all_lobby_simple_data()));
 };

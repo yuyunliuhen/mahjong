@@ -28,12 +28,32 @@ region_wrapper.prototype.init = function(lid,region_info,max_room_num){
 };
 
 region_wrapper.prototype.pack_data = function(){
+    var array_table_data = [];
+    for(var v in this.table_list){
+        array_table_data.push(this.table_list[v].pack_data());
+    }
     return {
         id:this.id,
         chip:this.chip,
         cost:this.cost,
         note:this.note,
-        online_num:this.online_num
+        online_num:this.online_num,
+        array_table_data:array_table_data
+    };
+};
+
+region_wrapper.prototype.pack_simple_data = function(){
+    var array_table_data = [];
+    for(var v in this.table_list){
+        array_table_data.push(this.table_list[v].pack_simple_data());
+    }
+    return {
+        id:this.id,
+        chip:this.chip,
+        cost:this.cost,
+        note:this.note,
+        online_num:this.online_num,
+        array_table_data:array_table_data
     };
 };
 

@@ -12,3 +12,8 @@ mahjong_remote.prototype.test = function(msg,cb){
     console.log("%j",msg);
     cb();
 };
+
+mahjong_remote.prototype.start_game = function(lid,rid,tid,cb){
+    console.log(lid);
+    cb();
+};

@@ -6,12 +6,13 @@ module.exports = {
     TYPE_MSG:{
         TYPE_MSG_TEST :1,
         TYPE_MSG_LOGIN:2,
-        TYPE_MSG_ENTER_ROOM:3,
-        TYPE_MSG_ENTER_LOBBY:4,
         TYPE_MSG_GET_CHARGE_LIST:5,
         TYPE_MSG_ENTER_GAME:6,
-        TYPE_MSG_LEAVE_LOBBY:7,
-        TYPE_MSG_LEAVE_ROOM:8
+        TYPE_MSG_START_GAME:7
+    },
+    TYPE_NOTICE:{
+        TYPE_NOTICE_ENTER_GAME :1,
+        TYPE_NOTICE_START_GAME :2
     },
 
     TYPE_REMOTE_LOBBY:{
@@ -40,7 +41,28 @@ module.exports = {
         GAME_ACTION_CHOW:0,
         GAME_ACTION_PONG:1,
         GAME_ACTION_KONG:2,
-        GAME_ACTION_WIN:3,
+        GAME_ACTION_WIN:3
     },
-    MAX_NUM_PLAYER_PER_TABLE:4
-};
+    MAX_NUM_PLAYER_PER_TABLE:4,
+    GLOBAL_SESSION:"global_session",
+    CARD_TYPE:{
+        //  中发白
+        CARD_TYPE_DRAGON:0,
+        //  东西南北
+        CARD_TYPE_WIND:1,
+        //  万
+        CARD_TYPE_CHARACTER:2,
+        //  条
+        CARD_TYPE_BAMBOO:3,
+        //  筒
+        CARD_TYPE_DOT:4
+    },
+    CARD_TOTAL:136,
+    CARD_TYPE_MAX:6,
+    CARD_DRAGON_MAX_NUM:3,
+    CARD_WIND_MAX_NUM:4,
+    CARD_CHARACTER_MAX_NUM:9,
+    CARD_BAMBOO_MAX_NUM:9,
+    CARD_DOT_MAX_NUM:9
+}
+;
