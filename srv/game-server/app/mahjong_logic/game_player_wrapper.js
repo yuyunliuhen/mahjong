@@ -68,3 +68,39 @@ game_player_wrapper.prototype.add_card = function(card_type,card_val){
     this.card_last.set_attr('type',card_type);
     this.card_last.set_attr('val',card_val);
 };
+
+game_player_wrapper.prototype.get_card_index = function(card_type,card_val){
+    for(var i = 0; i < consts.CARD_TYPE_MAX; ++i){
+        for(var j = 0; j < this.card_list_hand[i].length; ++j){
+            if(card_type == i && card_val == this.card_list_hand[i][j]){
+                return j;
+            }
+        }
+    }
+    return -1;
+};
+
+game_player_wrapper.prototype.del_card = function(card_index){
+    for(var i = 0; i < consts.CARD_TYPE_MAX; ++i){
+        for(var j = 0; j < this.card_list_hand[i].length; ++j){
+            if(j == card_index){
+                this.card_list_hand[i].splice(i,1);
+            }
+        }
+    }
+};
+
+game_player_wrapper.prototype.clean_up = function(card_index){
+    for(var i = 0; i < consts.CARD_TYPE_MAX; ++i){
+        for(var j = 0; j < this.card_list_hand[i].length; ++j){
+            delete this.card_list_hand[i][j];
+            delete this.card_list_chow[i][j];
+            delete this.card_list_kong[i][j];
+            delete this.card_list_pong[i][j];
+        }
+        delete this.card_list_hand[i];
+        delete this.card_list_chow[i];
+        delete this.card_list_kong[i];
+        delete this.card_list_pong[i];
+    }
+};

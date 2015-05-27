@@ -41,8 +41,12 @@ lobby_wrapper.prototype.enter_room = function(rid){
     this.region_list[rid].enter_room();
 };
 
-lobby_wrapper.prototype.enter_game = function(rid,username,sid,cb){
-    this.region_list[rid].enter_game(username,sid,cb);
+lobby_wrapper.prototype.enter_game = function(rid,tid,username,sid,cb){
+    this.region_list[rid].enter_game(username,sid,tid,cb);
+};
+
+lobby_wrapper.prototype.leave_game = function(rid,tid,username,sid,cb){
+    this.region_list[rid].leave_game(username,sid,tid,cb);
 };
 
 lobby_wrapper.prototype.pack_simple_data = function(){

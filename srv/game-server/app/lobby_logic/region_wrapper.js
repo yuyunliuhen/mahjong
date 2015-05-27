@@ -71,21 +71,22 @@ region_wrapper.prototype.leave_room = function(username){
    }
 };
 
-region_wrapper.prototype.enter_game = function(username,sid,cb){
+region_wrapper.prototype.enter_game = function(username,sid,tid,cb){
     var success = 0;
-    for(var v in this.table_list){
-        var table_wrapper = this.table_list[v];
+        var table_wrapper = this.table_list[tid];
         if(table_wrapper){
             if(table_wrapper.joiner_list.length < consts.MAX_NUM_PLAYER_PER_TABLE){
                 success = table_wrapper.enter_game(username,sid);
                 if(success){
                     table_wrapper.enter_game_notice(username);
-                    break;
                 }
             }
         }
-    }
     cb(success);
 };
 
-
+region_wrapper.prototype.leave_game = function(username,sid,tid,cb){
+    var success = 0;
+    this.table_list[tid].leave_game(username,sid);
+    cb(success);
+};

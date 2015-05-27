@@ -1,5 +1,6 @@
 var pomelo = require('pomelo');
 var user_wrapper = require('./app/user/user_wrapper');
+var sessions_wrapper = require('./app/lobby_logic/sessions_wrapper');
 var lobby_manager = require('./app/lobby_logic/lobby_manager');
 /**
  * Init app for client.
@@ -23,11 +24,16 @@ app.configure('production|development', 'connector', function(){
 
   var __user_wrapper = new user_wrapper();
   app.set('user_wrapper',__user_wrapper);
+
 });
 
 app.configure('production|development', 'lobby', function(){
   var __lobby_manager= new lobby_manager();
   app.set('lobby_manager',__lobby_manager);
+
+  var __sessions_wrapper= new sessions_wrapper();
+  app.set('sessions_wrapper',__sessions_wrapper);
+
 });
 
 var router = function(routeParam, msg, context, cb) {

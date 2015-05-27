@@ -11,12 +11,12 @@ module.exports = {
         TYPE_MSG_START_GAME:7
     },
     TYPE_NOTICE:{
-        TYPE_NOTICE_ENTER_GAME :1,
-        TYPE_NOTICE_START_GAME :2
+        TYPE_NOTICE_ENTER_GAME :1001,
+        TYPE_NOTICE_START_GAME :1002
     },
 
     TYPE_REMOTE_LOBBY:{
-        TYPE_REMOTE_LOBBY_TEST :101
+        TYPE_REMOTE_LOBBY_TEST :2001
     },
 
     //  lobby status

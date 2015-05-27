@@ -8,11 +8,15 @@ var pomelo = require('pomelo');
 message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_ENTER_GAME, function(msg, session, next) {
     var lid = msg.lid;
     var rid = msg.rid;
+    var tid = msg.tid;
     var username = msg.username;
     var res_msg = {};
     res_msg.msg_id = msg.msg_id;
-    pomelo.app.rpc.lobby.lobby_remote.enter_game(session, lid, rid, username,pomelo.app.get('serverId'), function(success){
+    pomelo.app.rpc.lobby.lobby_remote.enter_game(session, lid, rid,tid, username,pomelo.app.get('serverId'), function(success){
         res_msg.success = success;
+        if(success){
+
+        }
         next(null, res_msg);
     });
 });

@@ -47,6 +47,14 @@ table_wrapper.prototype.enter_game = function(username,sid){
     return 1;
 };
 
+table_wrapper.prototype.leave_game = function(username,sid){
+    for(var i = 0; i < this.joiner_list.length; ++i){
+        if(this.joiner_list[i].username == username){
+            this.joiner_list.splice(i,1);
+        }
+    }
+};
+
 table_wrapper.prototype.enter_game_notice = function(username){
     var channelService = pomelo.app.get('channelService');
     var channel_name = consts.GLOBAL_SESSION;

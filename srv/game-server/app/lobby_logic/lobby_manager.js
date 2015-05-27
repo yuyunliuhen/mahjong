@@ -37,8 +37,12 @@ lobby_wrapper.prototype.enter_room = function(lid,rid){
     this.lobby_list[lid].enter_room(rid);
 };
 
-lobby_manager.prototype.enter_game = function(lid,rid,username,sid,cb){
-    this.lobby_list[lid].enter_game(rid,username,sid,cb);
+lobby_manager.prototype.enter_game = function(lid,rid,tid,username,sid,cb){
+    this.lobby_list[lid].enter_game(rid,tid,username,sid,cb);
+};
+
+lobby_manager.prototype.leave_game = function(lid,rid,tid,username,sid,cb){
+    this.lobby_list[lid].leave_game(rid,tid,username,sid,cb);
 };
 
 lobby_manager.prototype.pack_all_lobby_simple_data = function(){
