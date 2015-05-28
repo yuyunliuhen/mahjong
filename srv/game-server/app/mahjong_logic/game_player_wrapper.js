@@ -2,7 +2,7 @@
  * Created by Administrator on 2015/5/25.
  */
 var consts = require('../util/consts');
-var object_template = require('../object_template');
+var object_template = require('../object/object_template');
 var game_player_wrapper = function(){
     this.status = 0;
 };
@@ -103,4 +103,22 @@ game_player_wrapper.prototype.clean_up = function(card_index){
         delete this.card_list_kong[i];
         delete this.card_list_pong[i];
     }
+};
+
+game_player_wrapper.prototype.pack_card_list_hand_data = function(){
+    var card_list_hand_data = [];
+    for(var i = 0; i < this.card_list_hand.length; ++i){
+        for(var j = 0; j < this.card_list_hand[i].length; ++j){
+            var tmp_object_card = this.card_list_hand[i][j];
+           if(tmp_object_card){
+               card_list_hand_data.push([tmp_object_card.get_attr('type'),tmp_object_card.get_attr('val')]);
+           }
+        }
+    }
+    var data = {
+        uid:this.uid,
+        sid:this.sid,
+        card_list_hand:card_list_hand_data
+    };
+    return data;
 };

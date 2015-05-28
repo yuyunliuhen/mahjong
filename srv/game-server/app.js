@@ -2,6 +2,7 @@ var pomelo = require('pomelo');
 var user_wrapper = require('./app/user/user_wrapper');
 var sessions_wrapper = require('./app/lobby_logic/sessions_wrapper');
 var lobby_manager = require('./app/lobby_logic/lobby_manager');
+var game_login_wrapper = require('./app/mahjong_logic/game_logic_wrapper');
 /**
  * Init app for client.
  */
@@ -33,6 +34,12 @@ app.configure('production|development', 'lobby', function(){
 
   var __sessions_wrapper= new sessions_wrapper();
   app.set('sessions_wrapper',__sessions_wrapper);
+
+});
+
+app.configure('production|development', 'mahjong', function(){
+  var __game_login_wrapper= new game_login_wrapper();
+  app.set('game_login_wrapper',__game_login_wrapper);
 
 });
 

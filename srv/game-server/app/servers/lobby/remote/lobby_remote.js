@@ -42,12 +42,7 @@ lobby_remote.prototype.get = function(name, flag) {
 };
 
 lobby_remote.prototype.kick = function(uid, sid, name, cb) {
-
-    var sessions_wrapper = pomelo.app.get('sessions_wrapper');
-    var lid = sessions_wrapper.get_lid(uid);
-    var rid = sessions_wrapper.get_rid(uid);
-    var tid = sessions_wrapper.get_tid(uid);
-    this.leave_game(lid,rid,tid,uid.split('*')[0],sid,function(){});
+    this.leave_game(uid,sid,function(){});
 
     var channel = this.channelService.getChannel(name, false);
     // leave channel
@@ -76,9 +71,15 @@ lobby_remote.prototype.enter_game = function(lid,rid,tid,username,sid,cb) {
     pomelo.app.get('sessions_wrapper').add(uid,lid,rid,tid);
 };
 
-lobby_remote.prototype.leave_game = function(lid,rid,tid,username,sid,cb) {
+lobby_remote.prototype.leave_game = function(uid,sid,cb) {
+    var sessions_wrapper = pomelo.app.get('sessions_wrapper');
+    var lid = sessions_wrapper.get_lid(uid);
+    var rid = sessions_wrapper.get_rid(uid);
+    var tid = sessions_wrapper.get_tid(uid);
+    var username = uid.split('*')[0];
     var lobby_manager = pomelo.app.get('lobby_manager');
     lobby_manager.leave_game(lid,rid,tid,username,sid,cb);
+    sessions_wrapper.remove(uid);
 };
 
 lobby_remote.prototype.pack_all_lobby_simple_data = function(cb) {

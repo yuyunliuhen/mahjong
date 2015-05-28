@@ -38,8 +38,8 @@ object_template.create_object_user = function(){
 
 object_template.create_object_card = function(){
     var __object_card = new object_card();
-    __object_user.reg_attr('type',0);
-    __object_user.reg_attr('val',0);
+    __object_card.reg_attr('type',0);
+    __object_card.reg_attr('val',0);
     return __object_card;
 };
 

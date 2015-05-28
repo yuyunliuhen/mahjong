@@ -58,6 +58,8 @@ module.exports = {
         CARD_TYPE_DOT:4
     },
     CARD_TOTAL:136,
+    CARD_TOTAL_FIRST_PER_PEOPLE:13,
+    CARD_NUM_PER_TYPE:4,
     CARD_TYPE_MAX:6,
     CARD_DRAGON_MAX_NUM:3,
     CARD_WIND_MAX_NUM:4,

@@ -16,39 +16,51 @@ shuffle_wrapper.prototype.shuffle = function(){
     this.card_used_num = 0;
     this.card_data = [];
     var i = 0;
+    var j = 0;
     //  dragon
     for(i = 1; i <= consts.CARD_DRAGON_MAX_NUM; ++i){
-        var object_card = object_template.create_object('object_card');
-        object_card.init(consts.CARD_TYPE.CARD_TYPE_DRAGON,i);
-        this.card_data.push(object_card);
+        for(j = 0; j < consts.CARD_NUM_PER_TYPE; j++){
+            var object_card = object_template.create_object('object_card');
+            object_card.init(consts.CARD_TYPE.CARD_TYPE_DRAGON,i);
+            this.card_data.push(object_card);
+        }
     }
     //  wind
     for(i = 1; i <= consts.CARD_WIND_MAX_NUM; ++i){
-        var object_card = object_template.create_object('object_card');
-        object_card.init(consts.CARD_TYPE.CARD_TYPE_WIND,i);
-        this.card_data.push(object_card);
+        for(j = 0; j < consts.CARD_NUM_PER_TYPE; j++){
+            var object_card = object_template.create_object('object_card');
+            object_card.init(consts.CARD_TYPE.CARD_TYPE_WIND,i);
+            this.card_data.push(object_card);
+        }
     }
     //  character
     for(i = 1; i <= consts.CARD_CHARACTER_MAX_NUM; ++i){
-        var object_card = object_template.create_object('object_card');
-        object_card.init(consts.CARD_TYPE.CARD_TYPE_CHARACTER,i);
-        this.card_data.push(object_card);
+        for(j = 0; j < consts.CARD_NUM_PER_TYPE; j++){
+            var object_card = object_template.create_object('object_card');
+            object_card.init(consts.CARD_TYPE.CARD_TYPE_CHARACTER,i);
+            this.card_data.push(object_card);
+        }
     }
     //  bamboo
-    for(i = 1; i <= consts.CARD_BAMBOO_MAX_NUM; ++i){
-        var object_card = object_template.create_object('object_card');
-        object_card.init(consts.CARD_TYPE.CARD_TYPE_BAMBOO,i);
-        this.card_data.push(object_card);
+    for(i = 1; i <= consts.CARD_BAMBOO_MAX_NUM; ++i) {
+        for (j = 0; j < consts.CARD_NUM_PER_TYPE; j++) {
+            var object_card = object_template.create_object('object_card');
+            object_card.init(consts.CARD_TYPE.CARD_TYPE_BAMBOO, i);
+            this.card_data.push(object_card);
+        }
     }
     //  dot
     for(i = 1; i <= consts.CARD_DOT_MAX_NUM; ++i){
         var object_card = object_template.create_object('object_card');
         object_card.init(consts.CARD_TYPE.CARD_TYPE_DOT,i);
         this.card_data.push(object_card);
+        this.card_data.push(object_card);
+        this.card_data.push(object_card);
+        this.card_data.push(object_card);
     }
     //  random shuffle
     for (i = 0; i < this.card_data.length; i++) {
-        var rand = parseInt(this.card_data * Math.random());
+        var rand = parseInt(this.card_data.length * Math.random());
         var temp = this.card_data[i];
         this.card_data[i] = this.card_data[rand];
         this.card_data[rand] = temp;
@@ -56,11 +68,11 @@ shuffle_wrapper.prototype.shuffle = function(){
 };
 
 shuffle_wrapper.prototype.get_new_card = function(){
-    var object_card = null;
+    var tmp_object_card = null;
     if( this.card_used_num < (consts.CARD_TOTAL - this.card_draw_num)){
-        object_card = this.card_data[this.card_used_num++];
+        tmp_object_card = this.card_data[this.card_used_num++];
     }
-    return object_card;
+    return tmp_object_card;
 };
 
 shuffle_wrapper.prototype.set_card_draw_num = function(num){

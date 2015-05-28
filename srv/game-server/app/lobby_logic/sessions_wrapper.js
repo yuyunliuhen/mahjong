@@ -16,18 +16,27 @@ sessions_wrapper.prototype.add = function(uid,lid,rid,tid){
 };
 
 sessions_wrapper.prototype.get_lid = function(uid){
-    return this.sessions[uid].lid;
+    if(this.sessions[uid]){
+        return this.sessions[uid].lid;
+    }
+    return -1;
 };
 
 sessions_wrapper.prototype.get_rid = function(uid){
-    return this.sessions[uid].rid;
+    if(this.sessions[uid]){
+        return this.sessions[uid].rid;
+    }
+    return -1;
 };
 
 sessions_wrapper.prototype.get_tid = function(uid){
-    return this.sessions[uid].tid;
+    if(this.sessions[uid]){
+        return this.sessions[uid].tid;
+    }
+    return -1;
 };
 
-sessions_wrapper.prototype.del = function(uid){
+sessions_wrapper.prototype.remove = function(uid){
     this.sessions[uid] = null;
 };
 

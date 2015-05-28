@@ -13,7 +13,6 @@ mahjong_remote.prototype.test = function(msg,cb){
     cb();
 };
 
-mahjong_remote.prototype.start_game = function(lid,rid,tid,cb){
-    console.log(lid);
-    cb();
+mahjong_remote.prototype.start_game = function(join_list,cb){
+    pomelo.app.get('game_login_wrapper').start_game(join_list,cb);
 };

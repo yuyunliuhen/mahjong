@@ -12,10 +12,10 @@ message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_ENTER_GAME, function(msg, session, 
     var username = msg.username;
     var res_msg = {};
     res_msg.msg_id = msg.msg_id;
-    pomelo.app.rpc.lobby.lobby_remote.enter_game(session, lid, rid,tid, username,pomelo.app.get('serverId'), function(success){
+    pomelo.app.rpc.lobby.lobby_remote.enter_game(session, lid, rid,tid, username,pomelo.app.get('serverId'), function(success,joiner_data){
         res_msg.success = success;
         if(success){
-
+            res_msg.joiner_data = joiner_data;
         }
         next(null, res_msg);
     });
