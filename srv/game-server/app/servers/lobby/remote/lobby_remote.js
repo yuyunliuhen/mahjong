@@ -86,3 +86,22 @@ lobby_remote.prototype.pack_all_lobby_simple_data = function(cb) {
     var lobby_manager = pomelo.app.get('lobby_manager');
     cb(JSON.stringify(lobby_manager.pack_all_lobby_simple_data()));
 };
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+lobby_remote.prototype.game_server_notice = function(target_username,sid,res_msg){
+    var channelService = pomelo.app.get('channelService');
+    var channel_name = consts.GLOBAL_SESSION;
+    var channel = channelService.getChannel(channel_name, false);
+    var param = {
+        route: 'on_msg',
+        msg: res_msg,
+        from: target_username,
+        target:  target_username
+    };
+    var tuid = target_username + '*';
+    var tsid = channel.getMember(tuid)['sid'];
+    channelService.pushMessageByUids(param, [{
+        uid: tuid,
+        sid: tsid
+    }]);
+};

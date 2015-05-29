@@ -4,6 +4,7 @@
 var game_player_wrapper = require('./game_player_wrapper');
 var shuffle_wrapper = require('./shuffle_wrapper');
 var consts = require('../util/consts');
+var pomelo = require('pomelo');
 //  one bout of mahjong
 var game_logic_wrapper = function(){
     this.table_id = 0;
@@ -63,4 +64,29 @@ game_logic_wrapper.prototype.start_game = function(joiner_list,cb){
         this.player_list.push(__game_player_wrapper);
     }
     cb(JSON.stringify(player_card_list_hand_array));
+    this.game_status = consts.GAME_STATUS.GAME_STATUS_FIND_BANKER;
+};
+
+game_logic_wrapper.prototype.tick = function(){
+    switch(this.game_status){
+        case consts.GAME_STATUS.GAME_STATUS_FIND_BANKER:{
+            var tmp_player_index = Math.floor(Math.random()*this.player_list.length);
+            var res_msg = {};
+            res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_FIND_BANKER;
+            var tmp_card = this.shuffle.get_new_card();
+            res_msg.card_type = tmp_card.get_attr('type');
+            res_msg.card_val= tmp_card.get_attr('val');
+            this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
+            pomelo.app.rpc.lobby.lobby_remote.game_server_notice(null,this.player_list[tmp_player_index].get_username(),this.player_list[tmp_player_index].get_sid(),res_msg,function(){
+
+            });
+            break;
+        }
+        case consts.GAME_STATUS.GAME_STATUS_RUNNING:{
+            break;
+        }
+        case consts.GAME_STATUS.GAME_STATUS_QUESTION:{
+            break;
+        }
+    }
 };

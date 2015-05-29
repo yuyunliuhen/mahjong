@@ -58,7 +58,7 @@ table_wrapper.prototype.enter_game = function(username,sid,cb){
 
     //  if table is full, notice player start game
     if(this.joiner_list.length == consts.MAX_NUM_PLAYER_PER_TABLE){
-        pomelo.app.rpc.mahjong.mahjong_remote.start_game(null, JSON.stringify(this.joiner_list),function(player_card_list_hand_array){
+        pomelo.app.rpc.mahjong.mahjong_remote.start_game(null, this.tid,JSON.stringify(this.joiner_list),function(player_card_list_hand_array){
             self.start_game_notice( JSON.parse(player_card_list_hand_array));
         });
     }
