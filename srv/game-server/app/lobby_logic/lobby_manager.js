@@ -42,7 +42,9 @@ lobby_manager.prototype.enter_game = function(lid,rid,tid,username,sid,cb){
 };
 
 lobby_manager.prototype.leave_game = function(lid,rid,tid,username,sid,cb){
-    this.lobby_list[lid].leave_game(rid,tid,username,sid,cb);
+    if(this.lobby_list[lid]){
+        this.lobby_list[lid].leave_game(rid,tid,username,sid,cb);
+    }
 };
 
 lobby_manager.prototype.pack_all_lobby_simple_data = function(){

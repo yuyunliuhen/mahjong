@@ -25,7 +25,7 @@ game_player_wrapper.prototype.init = function(username,sid){
     this.card_list_chow = this.create_multi_array();
     this.card_list_kong = this.create_multi_array();
     this.card_list_pong = this.create_multi_array();
-    this.card_last = object_template.create_object_card();
+    this.card_last = null;;
     this.win_title = "";
     this.win_multiple = 0;
     this.flag_9lbd = false;
@@ -122,3 +122,13 @@ game_player_wrapper.prototype.pack_card_list_hand_data = function(){
     };
     return data;
 };
+
+game_player_wrapper.prototype.get_end_card = function(){
+    for(var i = consts.CARD_TYPE_MAX - 1; i >= 0 ; --i){
+        if(this.card_list_hand[i].length){
+            return this.card_list_hand[i][this.card_list_hand[i].length - 1];
+        }
+    }
+    return this.card_last;
+};
+

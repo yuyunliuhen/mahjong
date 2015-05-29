@@ -14,7 +14,8 @@ var game_logic_wrapper = function(){
     this.player_list = [];
     this.start_time = 0;
     this.last_time = 0;
-    this.wait_time = 0;
+    this.wait_time = consts.MAX_WAITING_TIME;
+    this.cur_player_index = 0;
     this.shuffle = null;
 };
 
@@ -70,23 +71,59 @@ game_logic_wrapper.prototype.start_game = function(joiner_list,cb){
 game_logic_wrapper.prototype.tick = function(){
     switch(this.game_status){
         case consts.GAME_STATUS.GAME_STATUS_FIND_BANKER:{
-            var tmp_player_index = Math.floor(Math.random()*this.player_list.length);
-            var res_msg = {};
-            res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_FIND_BANKER;
-            var tmp_card = this.shuffle.get_new_card();
-            res_msg.card_type = tmp_card.get_attr('type');
-            res_msg.card_val= tmp_card.get_attr('val');
-            this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
-            pomelo.app.rpc.lobby.lobby_remote.game_server_notice(null,this.player_list[tmp_player_index].get_username(),this.player_list[tmp_player_index].get_sid(),res_msg,function(){
-
-            });
+            this.notice_find_banker();
             break;
         }
         case consts.GAME_STATUS.GAME_STATUS_RUNNING:{
+            if(this.wait_time <= 0){
+                this.notice_discard();
+            }else{
+                --this.wait_time;
+                if(consts.MAX_WAITING_TIME >= this.wait_time){
+
+                }
+            }
             break;
         }
         case consts.GAME_STATUS.GAME_STATUS_QUESTION:{
             break;
         }
     }
+};
+
+game_logic_wrapper.prototype.notice_find_banker = function(){
+    this.cur_player_index = Math.floor(Math.random()*this.player_list.length);
+    var res_msg = {};
+    res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_FIND_BANKER;
+    var tmp_card = this.shuffle.get_new_card();
+    res_msg.card_type = tmp_card.get_attr('type');
+    res_msg.card_val= tmp_card.get_attr('val');
+    this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
+    pomelo.app.rpc.lobby.lobby_remote.game_server_notice(null,this.player_list[this.cur_player_index].get_username(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
+        //  do nothing
+    });
+};
+
+game_logic_wrapper.prototype.notice_discard = function(obj_card){
+    if(!obj_card){
+        obj_card = this.player_list[this.cur_player_index].get_end_card();
+    }
+    this.player_list[this.cur_player_index].del_card(this.player_list[this.cur_player_index].get_card_index(obj_card.get_attr('type'),obj_card.get_attr('val')));
+    var res_msg = {};
+    res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_FIND_BANKER;
+    res_msg.card_type = obj_card.get_attr('type');
+    res_msg.card_val= obj_card.get_attr('val');
+    pomelo.app.rpc.lobby.lobby_remote.game_server_notice(null,this.player_list[this.cur_player_index].get_username(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
+        //  del card
+
+    });
+};
+
+game_logic_wrapper.prototype.notice_remain_time = function(){
+    var res_msg = {};
+    res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_REMAIN_TIME;
+    res_msg.remain_time = this.wait_time;
+    pomelo.app.rpc.lobby.lobby_remote.game_server_notice(null,this.player_list[this.cur_player_index].get_username(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
+        //  do nothing
+    });
 };

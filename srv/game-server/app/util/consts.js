@@ -8,12 +8,16 @@ module.exports = {
         TYPE_MSG_LOGIN:2,
         TYPE_MSG_GET_CHARGE_LIST:5,
         TYPE_MSG_ENTER_GAME:6,
-        TYPE_MSG_START_GAME:7
+        TYPE_MSG_START_GAME:7,
+
+
     },
     TYPE_NOTICE:{
         TYPE_NOTICE_ENTER_GAME :1001,
         TYPE_NOTICE_START_GAME :1002,
-        TYPE_NOTICE_FIND_BANKER:1003
+        TYPE_NOTICE_FIND_BANKER:1003,
+        TYPE_NOTICE_DISCARD:1004,
+        TYPE_NOTICE_REMAIN_TIME:1005
     },
 
     TYPE_REMOTE_LOBBY:{
@@ -71,6 +75,7 @@ module.exports = {
         GAME_STATUS_FIND_BANKER:1,
         GAME_STATUS_RUNNING:2,
         GAME_STATUS_QUESTION:3
-    }
+    },
+    MAX_WAITING_TIME:5
 }
 ;
