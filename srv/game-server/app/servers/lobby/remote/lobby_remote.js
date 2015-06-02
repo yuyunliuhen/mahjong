@@ -79,6 +79,9 @@ lobby_remote.prototype.leave_game = function(uid,sid,cb) {
     var username = uid.split('*')[0];
     var lobby_manager = pomelo.app.get('lobby_manager');
     lobby_manager.leave_game(lid,rid,tid,username,sid,cb);
+    pomelo.app.rpc.mahjong.mahjong_remote.leave_game(null,username,tid,function(){
+
+    });
     sessions_wrapper.remove(uid);
 };
 
@@ -98,10 +101,53 @@ lobby_remote.prototype.game_server_notice = function(target_username,sid,res_msg
         from: target_username,
         target:  target_username
     };
+    console.log(param);
     var tuid = target_username + '*';
+
+    if(!channel.getMember(tuid)){
+        console.error("channel.getMember(tuid) error! %d",tuid);
+        return;
+    }
     var tsid = channel.getMember(tuid)['sid'];
     channelService.pushMessageByUids(param, [{
         uid: tuid,
         sid: tsid
     }]);
+};
+
+lobby_remote.prototype.game_server_broadcast = function(target_username_arr,sid,res_msg){
+    for(var i = 0; i < target_username_arr.length; ++i){
+        var channelService = pomelo.app.get('channelService');
+        var channel_name = consts.GLOBAL_SESSION;
+        var channel = channelService.getChannel(channel_name, false);
+        var param = {
+            route: 'on_msg',
+            msg: res_msg,
+            from: target_username_arr[i],
+            target:  target_username_arr[i]
+        };
+        console.log(param);
+        var tuid = target_username_arr[i] + '*';
+
+        if(!channel.getMember(tuid)){
+            console.log("channel.getMember(tuid) error! %d",tuid);
+            return;
+        }
+        var tsid = channel.getMember(tuid)['sid'];
+        channelService.pushMessageByUids(param, [{
+            uid: tuid,
+            sid: tsid
+        }]);
+    }
+};
+
+lobby_remote.prototype.discard = function(username,sid){
+    var uid = username + '*';
+    var sessions_wrapper = pomelo.app.get('sessions_wrapper');
+    var lid = sessions_wrapper.get_lid(uid);
+    var rid = sessions_wrapper.get_rid(uid);
+    var tid = sessions_wrapper.get_tid(uid);
+    pomelo.app.rpc.mahjong.mahjong_remote.discard(null,username,tid,card_type,card_val,function(){
+
+    });
 };

@@ -17,7 +17,7 @@ game_player_wrapper.prototype.create_multi_array = function(){
     return array_multi;
 };
 
-game_player_wrapper.prototype.init = function(username,sid){
+game_player_wrapper.prototype.init = function(username,sid,pos){
     this.username = username;
     this.sid = sid;
     this.uid = username + '*';
@@ -25,7 +25,7 @@ game_player_wrapper.prototype.init = function(username,sid){
     this.card_list_chow = this.create_multi_array();
     this.card_list_kong = this.create_multi_array();
     this.card_list_pong = this.create_multi_array();
-    this.card_last = null;;
+    this.card_last = object_template.create_object_card();;
     this.win_title = "";
     this.win_multiple = 0;
     this.flag_9lbd = false;
@@ -35,6 +35,8 @@ game_player_wrapper.prototype.init = function(username,sid){
     this.card_group_kong = [];
     //  13 cards
     this.card_in_hand = [];
+    this.flag_leave = 0;
+    this.pos = pos;
 };
 
 game_player_wrapper.prototype.get_username = function(){
@@ -132,3 +134,10 @@ game_player_wrapper.prototype.get_end_card = function(){
     return this.card_last;
 };
 
+game_player_wrapper.prototype.leave_game = function(){
+    this.flag_leave = 1;
+};
+
+game_player_wrapper.prototype.get_pos = function(){
+    return this.pos;
+};

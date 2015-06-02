@@ -1,0 +1,39 @@
+{
+  "appenders": [
+     {
+      "type": "file",
+      "filename": "./logs/lobby-logger.log",
+      "maxLogSize": 204800,
+      "backups": 3,
+      "category": "lobby-logger"
+    },
+    {
+          "type": "file",
+          "filename": "./logs/rank-logger.log",
+          "maxLogSize": 204800,
+          "backups": 3,
+          "category": "rank-logger"
+      },
+    {
+      "type": "file",
+      "filename": "./logs/relative-logger.log",
+      "maxLogSize": 204800,
+      "backups": 3,
+      "category": "relative-logger"
+    },
+    {
+      "type": "file",
+      "absolute": true,
+      "filename": "./logs/absolute-logger.log",
+      "maxLogSize": 204800,
+      "backups": 10,
+      "category": "absolute-logger"          
+    }
+  ],
+  "levels": {
+	"lobby-logger" : "DEBUG",
+	"rank-logger" : "DEBUG",
+    "relative-logger" : "DEBUG",
+	"absolute-logger" : "ERROR"
+  }
+}

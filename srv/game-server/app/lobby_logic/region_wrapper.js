@@ -72,13 +72,12 @@ region_wrapper.prototype.leave_room = function(username){
 };
 
 region_wrapper.prototype.enter_game = function (username, sid, tid, cb) {
-    var success = 0;
     var table_wrapper = this.table_list[tid];
     if (table_wrapper) {
         if (table_wrapper.joiner_list.length < consts.MAX_NUM_PLAYER_PER_TABLE) {
-            success = table_wrapper.enter_game(username, sid,cb);
-            if (success) {
-                table_wrapper.enter_game_notice(username);
+            var pos_index = table_wrapper.enter_game(username, sid,cb);
+            if (-1 != pos_index) {
+                table_wrapper.enter_game_notice(username,pos_index);
             }
         }
     }
@@ -89,3 +88,4 @@ region_wrapper.prototype.leave_game = function(username,sid,tid,cb){
     this.table_list[tid].leave_game(username,sid);
     cb(success);
 };
+

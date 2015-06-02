@@ -16,12 +16,36 @@ game_logic_manager.prototype.start_new_game = function(tid,join_list,cb){
     this.table_game_logic[tid] = __game_logic_wrapper;
 };
 
+game_logic_manager.prototype.game_over = function(tid,cb){
+    for(var v in this.table_game_logic){
+        if(v == tid){
+            this.table_game_logic[v].game_over(cb);
+        }
+    }
+};
+
+game_logic_manager.prototype.discard = function(username,tid,card_type,card_val,cb){
+    for(var v in this.table_game_logic){
+        if(v == tid){
+            this.table_game_logic[v].discard(username,card_type,card_val,cb);
+        }
+    }
+};
+
 game_logic_manager.prototype.tick = function(){
     var self = this;
-    var interval_time = 1*1000;
+    var interval_time = 2*1000;
     setInterval(function(){
         for(var v in self.table_game_logic){
             self.table_game_logic[v].tick();
         }
     },interval_time);
+};
+
+game_logic_manager.prototype.leave_game = function(username,tid,cb){
+    for(var v in this.table_game_logic){
+        if(v == tid){
+            this.table_game_logic[v].leave_game(username,cb);
+        }
+    }
 };

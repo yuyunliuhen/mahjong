@@ -56,7 +56,7 @@ var router = function(routeParam, msg, context, cb) {
   cb(null, id);
 };
 
-app.route('mahjong', router);
+//app.route('mahjong', router);
 
 // start app
 app.start();
