@@ -99,7 +99,6 @@ namespace mahjong {
 			}
 		}
 		on_request_cb(__status,__resp);
-		// release relative resource with pc_request_t
 		json_t*__msg = __req->msg;
 		pc_client_t* __client = __req->client;
 		json_decref(__msg);

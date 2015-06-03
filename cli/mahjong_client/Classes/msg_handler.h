@@ -36,10 +36,15 @@ namespace mahjong {
 		void	do_request_leave_lobby(const char* __username,int __lid);
 
 		//	enter game
-		void	do_request_enter_game(const char* __username,int __rid,int __lid);
+		void	do_request_enter_game(const char* __username,int __rid,int __lid,int __tid);
+
+		//	discard
+		void	do_request_discard(const char* __username,int __card_type,int __card_val);
 
 		//	send a message to somebody
 		void	do_request_chat(const char* __target_name,const char* __context);
+
+
 
 	private:
 		//	init server host and port
