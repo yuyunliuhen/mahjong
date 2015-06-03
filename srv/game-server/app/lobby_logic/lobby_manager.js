@@ -37,6 +37,18 @@ lobby_wrapper.prototype.enter_room = function(lid,rid){
     this.lobby_list[lid].enter_room(rid);
 };
 
-lobby_manager.prototype.enter_game = function(lid,rid,username,sid,cb){
-    this.lobby_list[lid].enter_game(rid,username,sid,cb);
+lobby_manager.prototype.enter_game = function(lid,rid,tid,username,sid,cb){
+    this.lobby_list[lid].enter_game(rid,tid,username,sid,cb);
+};
+
+lobby_manager.prototype.leave_game = function(lid,rid,tid,username,sid,cb){
+    this.lobby_list[lid].leave_game(rid,tid,username,sid,cb);
+};
+
+lobby_manager.prototype.pack_all_lobby_simple_data = function(){
+    var array_lobby_info = [];
+    for(var v in this.lobby_list){
+        array_lobby_info.push(this.lobby_list[v].pack_simple_data());
+    }
+    return array_lobby_info;
 };

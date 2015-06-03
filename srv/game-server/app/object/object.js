@@ -32,7 +32,7 @@ object.prototype.set_attr = function(key,val){
 };
 
 object.prototype.get_attr = function(key){
-    this.data.get_attr(key);
+    return this.data.get_attr(key);
 };
 
 object.prototype.json_2_string = function(){

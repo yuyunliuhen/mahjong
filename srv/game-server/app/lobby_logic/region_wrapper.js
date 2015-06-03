@@ -28,12 +28,32 @@ region_wrapper.prototype.init = function(lid,region_info,max_room_num){
 };
 
 region_wrapper.prototype.pack_data = function(){
+    var array_table_data = [];
+    for(var v in this.table_list){
+        array_table_data.push(this.table_list[v].pack_data());
+    }
     return {
         id:this.id,
         chip:this.chip,
         cost:this.cost,
         note:this.note,
-        online_num:this.online_num
+        online_num:this.online_num,
+        array_table_data:array_table_data
+    };
+};
+
+region_wrapper.prototype.pack_simple_data = function(){
+    var array_table_data = [];
+    for(var v in this.table_list){
+        array_table_data.push(this.table_list[v].pack_simple_data());
+    }
+    return {
+        id:this.id,
+        chip:this.chip,
+        cost:this.cost,
+        note:this.note,
+        online_num:this.online_num,
+        array_table_data:array_table_data
     };
 };
 
@@ -51,21 +71,21 @@ region_wrapper.prototype.leave_room = function(username){
    }
 };
 
-region_wrapper.prototype.enter_game = function(username,sid,cb){
+region_wrapper.prototype.enter_game = function (username, sid, tid, cb) {
     var success = 0;
-    for(var v in this.table_list){
-        var table_wrapper = this.table_list[v];
-        if(table_wrapper){
-            if(table_wrapper.joiner_list.length < consts.MAX_NUM_PLAYER_PER_TABLE){
-                success = table_wrapper.enter_game(username,sid);
-                if(success){
-                    table_wrapper.enter_game_notice(username);
-                    break;
-                }
+    var table_wrapper = this.table_list[tid];
+    if (table_wrapper) {
+        if (table_wrapper.joiner_list.length < consts.MAX_NUM_PLAYER_PER_TABLE) {
+            success = table_wrapper.enter_game(username, sid,cb);
+            if (success) {
+                table_wrapper.enter_game_notice(username);
             }
         }
     }
-    cb(success);
 };
 
-
+region_wrapper.prototype.leave_game = function(username,sid,tid,cb){
+    var success = 0;
+    this.table_list[tid].leave_game(username,sid);
+    cb(success);
+};
