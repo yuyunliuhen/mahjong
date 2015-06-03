@@ -34,7 +34,7 @@ game_logic_manager.prototype.discard = function(username,tid,card_type,card_val,
 
 game_logic_manager.prototype.tick = function(){
     var self = this;
-    var interval_time = 2*1000;
+    var interval_time = 1*1000;
     setInterval(function(){
         for(var v in self.table_game_logic){
             self.table_game_logic[v].tick();

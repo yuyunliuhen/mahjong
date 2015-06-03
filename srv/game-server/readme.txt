@@ -42,3 +42,43 @@
 数番	Scoring	　
 番数	Points	　
 诈和	declaring a false win；falsely declaring a win	　
+
+
+
+
+
+
+
+1. 搓麻之前的准备工作
+麻将牌 a Mahjong tile
+洗牌 shuffle
+筹码 dib,chip
+上家 opponent on the right
+下家 opponent on the left
+对门 opponent sitting opposite to one
+色子 dice
+
+2. 基本牌
+中发白 dragons(red,green,white)
+东南西北风 winds
+条 bamboos(bams)
+桶 circles
+万 characters
+
+3. 麻将基本打法
+打了八圈 eight rounds of play
+吃牌 drawing
+听牌 fishing
+碰 claiming a tile to match a triplet
+杠 claiming a tile for a quadruplet
+
+4. 各种和法
+平胡 common hand
+自摸 winning by one's own draw
+七小对儿 seven pairs
+清一色 flush
+十三幺 thirteen orphans
+一条龙 a complete sequence
+大三元 grand 3 chiefs
+大四喜 grand 4 happiness
+天和 heavenly hand

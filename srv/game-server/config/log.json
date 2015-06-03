@@ -8,6 +8,13 @@
       "category": "lobby-logger"
     },
     {
+      "type": "file",
+      "filename": "./logs/mahjong-logger.log",
+      "maxLogSize": 204800,
+      "backups": 3,
+      "category": "mahjong-logger"
+    },
+    {
           "type": "file",
           "filename": "./logs/rank-logger.log",
           "maxLogSize": 204800,
@@ -32,6 +39,7 @@
   ],
   "levels": {
 	"lobby-logger" : "DEBUG",
+	"mahjong-logger" : "DEBUG",
 	"rank-logger" : "DEBUG",
     "relative-logger" : "DEBUG",
 	"absolute-logger" : "ERROR"

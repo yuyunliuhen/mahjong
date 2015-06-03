@@ -6,6 +6,10 @@ var object_template = require('../object/object_template');
 var shuffle_wrapper = require('./shuffle_wrapper');
 var consts = require('../util/consts');
 var pomelo = require('pomelo');
+var log4js = require('log4js');
+log4js.configure(require('../../config/log.json'));
+var mahjong_logger = log4js.getLogger('mahjong-logger');
+
 //  one bout of mahjong
 var game_logic_wrapper = function(){
     this.table_id = 0;
@@ -19,6 +23,7 @@ var game_logic_wrapper = function(){
     this.cur_player_index = 0;
     this.cur_banker_index = 0;
     this.shuffle = null;
+    this.last_card = object_template.create_object_card();
 };
 
 module.exports = game_logic_wrapper;
@@ -78,7 +83,7 @@ game_logic_wrapper.prototype.start_game = function(joiner_list,cb){
         if (a.get_pos() < b.get_pos())
             return -1;
     });
-    console.log(this.player_list);
+    mahjong_logger.debug("start_game : player_card_list_hand_array %j ",player_card_list_hand_array);
     cb(JSON.stringify(player_card_list_hand_array));
     this.game_status = consts.GAME_STATUS.GAME_STATUS_FIND_BANKER;
 };
@@ -87,6 +92,7 @@ game_logic_wrapper.prototype.tick = function(){
     switch(this.game_status){
         case consts.GAME_STATUS.GAME_STATUS_FIND_BANKER:{
             this.cur_player_index = Math.floor(Math.random()*this.player_list.length);
+            this.cur_player_index = 0;
             this.cur_banker_index = this.cur_player_index;
             if(0){
                 this.notice_draw_card();
@@ -127,18 +133,26 @@ game_logic_wrapper.prototype.notice_find_banker = function(){
     });
 };
 
-game_logic_wrapper.prototype.notice_discard = function(obj_card){
+game_logic_wrapper.prototype.notice_discard = function(obj_card,except_myself){
     var self = this;
     if(!obj_card){
         obj_card = this.player_list[this.cur_player_index].get_end_card();
     }
-    this.player_list[this.cur_player_index].del_card(this.player_list[this.cur_player_index].get_card_index(obj_card.get_attr('type'),obj_card.get_attr('val')));
+    this.last_card.set_attr(obj_card.get_attr("type"),obj_card.get_attr("val"));
+    this.player_list[this.cur_player_index].del_card(obj_card.get_attr('type'),obj_card.get_attr('val'));
+    //mahjong_logger.debug("username %s,notice_discard obj_card %d %d, card_list_hand %j ", this.player_list[this.cur_player_index].get_username(),obj_card.get_attr('type'),obj_card.get_attr('val'),this.player_list[this.cur_player_index].get_card_list_hand());
     var res_msg = {};
     res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_DISCARD;
-    res_msg.card_type = obj_card.get_attr('type');
-    res_msg.card_val= obj_card.get_attr('val');
+    res_msg.card_type = parseInt(obj_card.get_attr('type'));
+    res_msg.card_val= parseInt(obj_card.get_attr('val'));
     res_msg.cur_player_index = this.cur_player_index;
-    pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,this.get_player_names(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
+    var broadcast_list = [];
+    if(except_myself){
+        broadcast_list = this.get_player_names_except_myself(this.player_list[this.cur_player_index].get_username());
+    }else{
+        broadcast_list = this.get_player_names()
+    }
+    pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,broadcast_list,this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
         //  do nothing
     });
 };
@@ -154,9 +168,9 @@ game_logic_wrapper.prototype.notice_remain_time = function(){
 
 game_logic_wrapper.prototype.notice_draw_card = function(){
     var res_msg = {};
-    res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_DRAW_CARD;
     var tmp_card = this.shuffle.get_new_card();
     if(tmp_card){
+        res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_DRAW_CARD;
         res_msg.card_type = tmp_card.get_attr('type');
         res_msg.card_val= tmp_card.get_attr('val');
         res_msg.cur_player_index = this.cur_player_index;
@@ -166,14 +180,16 @@ game_logic_wrapper.prototype.notice_draw_card = function(){
         });
     }
     else{
-        console.error('no card !!!!!!!!!');
+        res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_FLOW_BUREAU;
+        pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,this.get_player_names(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
+            //  do nothing
+        });
     }
 };
 
 game_logic_wrapper.prototype.inc_cur_player_index = function(){
     ++this.cur_player_index;
     this.cur_player_index = this.cur_player_index %  consts.MAX_NUM_PLAYER_PER_TABLE;
-    console.log("****************cur_player_index***********************" + this.cur_player_index);
 };
 
 game_logic_wrapper.prototype.game_over = function(cb){
@@ -181,20 +197,37 @@ game_logic_wrapper.prototype.game_over = function(cb){
 };
 
 game_logic_wrapper.prototype.discard = function(username,card_type,card_val,cb){
+
+    var tmp_player_index = this.get_player_index_by_name(username);
+    if(tmp_player_index != this.cur_player_index){
+
+    }
     var __game_player = this.get_player_by_name(username);
     if(__game_player){
         var tmp_card = object_template.create_object('object_card');
-        tmp_card.set_attr('card_type',card_type);
-        tmp_card.set_attr('card_val',card_val);
-        this.notice_discard(tmp_card);
+        tmp_card.set_attr('type',card_type);
+        tmp_card.set_attr('val',card_val);
+        this.notice_discard(tmp_card,true);
         this.check_all_card();
     }
+    cb();
 };
 
 game_logic_wrapper.prototype.get_player_names = function(){
     var username_arr = [];
     for(var i = 0; i < this.player_list.length; ++i){
         if(1 != this.player_list[i].flag_leave){
+            username_arr.push(this.player_list[i].get_username());
+        }
+    }
+    return username_arr;
+    console.log( username_arr);
+};
+
+game_logic_wrapper.prototype.get_player_names_except_myself = function(username){
+    var username_arr = [];
+    for(var i = 0; i < this.player_list.length; ++i){
+        if(1 != this.player_list[i].flag_leave && username != this.player_list[i].get_username()){
             username_arr.push(this.player_list[i].get_username());
         }
     }
@@ -225,4 +258,17 @@ game_logic_wrapper.prototype.reset_wait_time = function(){
 game_logic_wrapper.prototype.leave_game = function(username,cb){
     this.del_player(username);
     cb();
+};
+
+game_logic_wrapper.prototype.check_win = function(player_index){
+    this.player_list[player_index].add_card(this.last_card.get_attr("type"),this.last_card.get_attr("val"));
+};
+
+game_logic_wrapper.prototype.get_player_index_by_name = function(username){
+    for(var i = 0; i < this.player_list.length; ++i){
+        if(username == this.player_list[i].get_username()){
+            return this.player_list[i].get_pos();
+        }
+    }
+    return -1;
 };

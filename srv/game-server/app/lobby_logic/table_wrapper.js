@@ -118,6 +118,7 @@ table_wrapper.prototype.enter_game_notice = function(username,pos_index){
                     uid: tuid,
                     sid: tsid
                 }]);
+                lobby_logger.debug("enter_game_notice : %j",param);
             }
         }
     }

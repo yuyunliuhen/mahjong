@@ -54,3 +54,8 @@
 	cur_player_index:1
 }
 
+###流局通知
+{
+	"msg_id":1007
+}
+

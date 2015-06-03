@@ -25,7 +25,7 @@ game_player_wrapper.prototype.init = function(username,sid,pos){
     this.card_list_chow = this.create_multi_array();
     this.card_list_kong = this.create_multi_array();
     this.card_list_pong = this.create_multi_array();
-    this.card_last = object_template.create_object_card();;
+    this.card_last = object_template.create_object_card();
     this.win_title = "";
     this.win_multiple = 0;
     this.flag_9lbd = false;
@@ -71,22 +71,11 @@ game_player_wrapper.prototype.add_card = function(card_type,card_val){
     this.card_last.set_attr('val',card_val);
 };
 
-game_player_wrapper.prototype.get_card_index = function(card_type,card_val){
+game_player_wrapper.prototype.del_card = function(card_type,card_val){
     for(var i = 0; i < consts.CARD_TYPE_MAX; ++i){
         for(var j = 0; j < this.card_list_hand[i].length; ++j){
-            if(card_type == i && card_val == this.card_list_hand[i][j]){
-                return j;
-            }
-        }
-    }
-    return -1;
-};
-
-game_player_wrapper.prototype.del_card = function(card_index){
-    for(var i = 0; i < consts.CARD_TYPE_MAX; ++i){
-        for(var j = 0; j < this.card_list_hand[i].length; ++j){
-            if(j == card_index){
-                this.card_list_hand[i].splice(i,1);
+            if(card_type == this.card_list_hand[i][j].get_attr('type') && card_val == this.card_list_hand[i][j].get_attr('val')){
+                this.card_list_hand[i].splice(j,1);
             }
         }
     }
@@ -140,4 +129,22 @@ game_player_wrapper.prototype.leave_game = function(){
 
 game_player_wrapper.prototype.get_pos = function(){
     return this.pos;
+};
+
+/**
+ *
+ * @param is_draw_card: draw card (true) or discard(false)
+ */
+game_player_wrapper.prototype.check_win = function(is_draw_card){
+    if(is_draw_card){
+
+    }
+};
+
+game_player_wrapper.prototype.is_grand_4_happiness = function(){
+
+};
+
+game_player_wrapper.prototype.get_card_list_hand = function(){
+    return this.pack_card_list_hand_data();
 };

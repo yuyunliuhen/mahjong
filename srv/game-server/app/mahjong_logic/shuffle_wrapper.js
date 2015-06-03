@@ -4,6 +4,10 @@
 var consts = require('../util/consts');
 var object_card = require('../object/object_card');
 var object_template = require('../object/object_template');
+var log4js = require('log4js');
+log4js.configure(require('../../config/log.json'));
+var mahjong_logger = log4js.getLogger('mahjong-logger');
+
 var shuffle_wrapper = function(){
     this.card_data = [];
     this.card_draw_num = 0;
