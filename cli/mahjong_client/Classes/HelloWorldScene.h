@@ -1,6 +1,7 @@
 #ifndef __HELLOWORLD_SCENE_H__
 #define __HELLOWORLD_SCENE_H__
 
+#include <vector>
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 
@@ -29,8 +30,14 @@ public:
 
 	void enterGameCallback( cocos2d::Ref* __sender );
 
+	void discardCallback( cocos2d::Ref* __sender );
+
+	void addLog(std::string __context);
+
 private:
 	cocos2d::ui::EditBox* _editName;
+
+	cocos2d::ui::ListView* _listView;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

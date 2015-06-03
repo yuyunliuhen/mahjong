@@ -10,6 +10,7 @@ Scene* HelloWorld::createScene()
     
     // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
+	layer->setName("hello_world");
 
     // add layer as a child to scene
     scene->addChild(layer);
@@ -66,13 +67,13 @@ bool HelloWorld::init()
     this->addChild(label, 1);
 
     // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
+    //auto sprite = Sprite::create("HelloWorld.png");
 
     // position the sprite on the center of the screen
-    sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+   // sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
 
     // add the sprite as a child to this layer
-    this->addChild(sprite, 0);
+    //this->addChild(sprite, 0);
 
 	//	for test
 	//	add input text
@@ -115,6 +116,11 @@ bool HelloWorld::init()
 		this,  
 		menu_selector(HelloWorld::enterGameCallback));
 
+	MenuItemFont *__discard = MenuItemFont::create(  
+		"discard",  
+		this,  
+		menu_selector(HelloWorld::discardCallback));
+
 	float __border_width = 0;  
 	float __current_y_border = origin.y + visibleSize.height; 
 	float __offset = __border_width + __login_item->getContentSize().height/2; 
@@ -139,9 +145,38 @@ bool HelloWorld::init()
 	__enter_game->setPosition(ccp(origin.x + __enter_game->getContentSize().width/2 + __border_width,  
 		__current_y_border - __offset));
 
-	Menu* __menu = Menu::create(__login_item,__enter_lobby,__leave_lobby,__enter_room,__enter_game,NULL);  
+	__current_y_border -= 2 * __offset;  
+	__discard->setPosition(ccp(origin.x + __discard->getContentSize().width/2 + __border_width,  
+	__current_y_border - __offset));
+
+	Menu* __menu = Menu::create(__login_item,__enter_game,__discard,NULL);  
 	__menu->setPosition(20,-100);  
 	this->addChild(__menu,1,2); 
+
+	_listView = cocos2d::ui::ListView::create();
+	// set list view ex direction
+	_listView->setDirection(ui::ScrollView::Direction::VERTICAL);
+	_listView->setBounceEnabled(true);
+	_listView->setBackGroundImageScale9Enabled(true);
+	_listView->setContentSize(Size(240, 260));
+	_listView->setPosition(cocos2d::Vec2(360,20));
+
+	cocos2d::ui::Text* alert = cocos2d::ui::Text::create("ListView vertical", "fonts/Marker Felt.ttf", 20);
+	alert->setColor(Color3B(159, 168, 176));
+	alert->setTag(100);
+	alert->setString("test88888888");
+	cocos2d::ui::Layout* default_item = cocos2d::ui::Layout::create();
+	default_item->setTouchEnabled(true);
+	default_item->setContentSize(alert->getContentSize());
+	alert->setPosition(Vec2(default_item->getContentSize().width / 2.0f,
+		default_item->getContentSize().height / 2.0f));
+	default_item->addChild(alert);
+
+	// set model
+	_listView->setItemModel(default_item);
+
+	this->addChild(_listView);
+	addLog("8888888888888888888888888888888888888888888888888888888888");
 
 #if 0
 	mahjong::MsgHandler::instance()->do_request_test();
@@ -150,7 +185,7 @@ bool HelloWorld::init()
 	mahjong::MsgHandler::instance()->do_request_login(__username);
 	mahjong::MsgHandler::instance()->do_request_enter_lobby(__username,1);
 	mahjong::MsgHandler::instance()->do_request_enter_room(__username,1,1);
-	mahjong::MsgHandler::instance()->do_request_enter_game(__username,1,1);
+	mahjong::MsgHandler::instance()->do_request_enter_game(__username,1,1,1);
 #endif
 
 
@@ -161,7 +196,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
 	MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.","Alert");
-    return;
+    return;		
 #endif
 
 	Director::getInstance()->end();
@@ -204,7 +239,16 @@ void HelloWorld::enterGameCallback( cocos2d::Ref* __sender )
 	const char* __username = _editName->getText();
 	if (__username)
 	{
-		mahjong::MsgHandler::instance()->do_request_enter_game(__username,1,1);
+		mahjong::MsgHandler::instance()->do_request_enter_game(__username,1,1,1);
+	}
+}
+
+void HelloWorld::discardCallback( cocos2d::Ref* __sender )
+{
+	const char* __username = _editName->getText();
+	if (__username)
+	{
+		mahjong::MsgHandler::instance()->do_request_discard(__username,1,1);
 	}
 }
 
@@ -214,5 +258,19 @@ void HelloWorld::leaveLobbyCallback( cocos2d::Ref* __sender )
 	if (__username)
 	{
 		mahjong::MsgHandler::instance()->do_request_leave_lobby(__username,1);
+	}
+}
+
+void HelloWorld::addLog(std::string __context)
+{
+	_listView->pushBackDefaultItem();
+	cocos2d::ui::Widget*  item = _listView->getItem(_listView->getItems().size() -1);
+	if(item)
+	{ 
+		cocos2d::ui::Text* alert = (cocos2d::ui::Text*)item->getChildByTag(100);
+		if(alert)
+		{
+			alert->setString(__context);
+		}
 	}
 }

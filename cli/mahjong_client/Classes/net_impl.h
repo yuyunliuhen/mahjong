@@ -56,6 +56,10 @@ namespace mahjong{
 
 		//	notice callback user-defined
 		static void on_notice_cb(json_t* __resp);
+
+	public:
+		static void add_log(json_t* __resp);
+
 	private:
 		//	pomelo client instance
 		pc_client_t* client_;
