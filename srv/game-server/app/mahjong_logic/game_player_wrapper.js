@@ -58,10 +58,11 @@ game_player_wrapper.prototype.add_card = function(card_type,card_val){
     __object_card.set_attr('val',card_val);
     var find = false;
     for(var i = 0; i < cards_num; ++i){
-        if(card_val < this.card_list_hand[card_type][i]){
+        if(card_val < this.card_list_hand[card_type][i].get_attr('val')){
             //  insert
             this.card_list_hand[card_type].splice(i,0,__object_card);
             find = true;
+            break
         }
     }
     if(!find){
@@ -76,6 +77,7 @@ game_player_wrapper.prototype.del_card = function(card_type,card_val){
         for(var j = 0; j < this.card_list_hand[i].length; ++j){
             if(card_type == this.card_list_hand[i][j].get_attr('type') && card_val == this.card_list_hand[i][j].get_attr('val')){
                 this.card_list_hand[i].splice(j,1);
+                break;
             }
         }
     }
@@ -147,4 +149,61 @@ game_player_wrapper.prototype.is_grand_4_happiness = function(){
 
 game_player_wrapper.prototype.get_card_list_hand = function(){
     return this.pack_card_list_hand_data();
+};
+
+game_player_wrapper.prototype.check_kong = function(card_type,card_val){
+    this.card_group_kong = [];
+    var card_list_kong_length = this.card_list_hand[card_type].length;
+    if(card_list_kong_length != 0){
+        if(card_list_kong_length >= 3){
+            for(var i = 0; i < card_list_kong_length - 2; ++i){
+                if(this.card_list_hand[card_type][i] == card_val && this.card_list_hand[card_type][i + 1] == card_val && this.card_list_hand[card_type][i + 2] == card_val){
+                    var __object_card = object_template.create_object_card();
+                    __object_card.set_attr('type',card_type);
+                    __object_card.set_attr('val',card_val);
+                    this.card_group_kong.push(__object_card);
+                }
+            }
+        }
+    }
+    if(this.card_group_kong.length > 0){
+        return true;
+    }
+    return false;
+};
+
+game_player_wrapper.prototype.do_kong = function(card_type,card_val){
+    this.add_card(card_type,card_val);
+    for(var i = 0; i < this.card_group_kong.length; ++i){
+        this.del_card(card_type,card_val);
+    }
+    for(var j = 0; j < consts.MAX_NUM_CARD_KONG; ++j){
+        var __object_card = object_template.create_object_card();
+        __object_card.set_attr('type',card_type);
+        __object_card.set_attr('val',card_val);
+        if(__object_card){
+            this.card_list_kong[card_type].push(__object_card);
+        }
+    }
+};
+
+game_player_wrapper.prototype.check_pong = function(card_type,card_val){
+    this.card_group_pong = [];
+    var card_list_kong_length = this.card_list_hand[card_type].length;
+    if(card_list_kong_length != 0){
+        if(card_list_kong_length >= 2){
+            for(var i = 0; i < card_list_kong_length - 1; ++i){
+                if(this.card_list_hand[card_type][i].get_attr('val') == card_val && this.card_list_hand[card_type][i + 1].get_attr('val') == card_val){
+                    var __object_card = object_template.create_object_card();
+                    __object_card.set_attr('type',card_type);
+                    __object_card.set_attr('val',card_val);
+                    this.card_group_pong.push(__object_card);
+                }
+            }
+        }
+    }
+    if(this.card_group_pong.length > 0){
+        return true;
+    }
+    return false;
 };

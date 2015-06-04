@@ -28,3 +28,7 @@ mahjong_remote.prototype.discard = function(username,tid,card_type,card_val,cb) 
 mahjong_remote.prototype.leave_game = function(username,tid,cb){
     pomelo.app.get('game_logic_manager').leave_game(username,tid,cb);
 };
+
+mahjong_remote.prototype.action_answer = function(username,tid,action,cb) {
+    pomelo.app.get('game_logic_manager').action_answer(username,tid,action,cb);
+};

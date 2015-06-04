@@ -59,3 +59,13 @@
 	"msg_id":1007
 }
 
+###Ñ¯ÎÊ(ºú/¸Ü/Åö)
+{
+	"msg_id":1008£¬
+	"action":1111
+}
+action¶¨Òå:
+GAME_ACTION_PONG:1,
+GAME_ACTION_KONG:10,
+GAME_ACTION_WIN:100,
+GAME_ACTION_CANCEL:1000

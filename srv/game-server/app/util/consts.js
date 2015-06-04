@@ -9,9 +9,8 @@ module.exports = {
         TYPE_MSG_GET_CHARGE_LIST:5,
         TYPE_MSG_ENTER_GAME:6,
         TYPE_MSG_START_GAME:7,
-        TYPE_MSG_DISCARD:8
-
-
+        TYPE_MSG_DISCARD:8,
+        TYPE_MSG_ACTION_ANSWER:9
     },
     TYPE_NOTICE:{
         TYPE_NOTICE_ENTER_GAME :1001,
@@ -20,7 +19,8 @@ module.exports = {
         TYPE_NOTICE_DISCARD:1004,
         TYPE_NOTICE_REMAIN_TIME:1005,
         TYPE_NOTICE_DRAW_CARD:1006,
-        TYPE_NOTICE_FLOW_BUREAU:1007
+        TYPE_NOTICE_FLOW_BUREAU:1007,
+        TYPE_NOTICE_ACTION_QUESTION:1008
     },
 
     TYPE_REMOTE_LOBBY:{
@@ -52,6 +52,7 @@ module.exports = {
         GAME_ACTION_WIN:3
     },
     MAX_NUM_PLAYER_PER_TABLE:4,
+    MAX_NUM_CARD_KONG:4,
     GLOBAL_SESSION:"global_session",
     CARD_TYPE:{
         //  ÖÐ·¢°×
@@ -79,6 +80,12 @@ module.exports = {
         GAME_STATUS_RUNNING:2,
         GAME_STATUS_QUESTION:3
     },
-    MAX_WAITING_TIME:5
+    MAX_WAITING_TIME:5,
+    GAME_ACTION: {
+        GAME_ACTION_PONG:1,
+        GAME_ACTION_KONG:10,
+        GAME_ACTION_WIN:100,
+        GAME_ACTION_CANCEL:1000
+    }
 }
 ;

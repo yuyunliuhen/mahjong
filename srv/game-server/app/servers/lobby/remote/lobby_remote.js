@@ -149,3 +149,12 @@ lobby_remote.prototype.discard = function(username,card_type,card_val,sid,cb){
     var tid = sessions_wrapper.get_tid(uid);
     pomelo.app.rpc.mahjong.mahjong_remote.discard(null,username,tid,card_type,card_val,cb);
 };
+
+lobby_remote.prototype.action_answer = function(username,action,cb){
+    var uid = username + '*';
+    var sessions_wrapper = pomelo.app.get('sessions_wrapper');
+    var lid = sessions_wrapper.get_lid(uid);
+    var rid = sessions_wrapper.get_rid(uid);
+    var tid = sessions_wrapper.get_tid(uid);
+    pomelo.app.rpc.mahjong.mahjong_remote.action_answer(null,username,tid,action,cb);
+};

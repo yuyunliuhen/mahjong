@@ -12,7 +12,6 @@ message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_DISCARD, function(msg, session, nex
     var res_msg = {};
     res_msg.msg_id = msg.msg_id;
     pomelo.app.rpc.lobby.lobby_remote.discard(session, username,card_type,card_val,pomelo.app.get('serverId'), function(){
-        console.log("*********************************************************************");
         next(null, res_msg);
     });
 });

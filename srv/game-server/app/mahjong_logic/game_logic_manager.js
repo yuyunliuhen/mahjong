@@ -49,3 +49,11 @@ game_logic_manager.prototype.leave_game = function(username,tid,cb){
         }
     }
 };
+
+game_logic_manager.prototype.action_answer = function(username,tid,action,cb){
+    for(var v in this.table_game_logic){
+        if(v == tid){
+            this.table_game_logic[v].action_answer(username,action,cb);
+        }
+    }
+};
