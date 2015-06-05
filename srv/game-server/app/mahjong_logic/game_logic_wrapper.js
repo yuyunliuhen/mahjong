@@ -13,12 +13,9 @@ var mahjong_logger = log4js.getLogger('mahjong-logger');
 //  one bout of mahjong
 var game_logic_wrapper = function(){
     this.table_id = 0;
-    this.player_num = 0;
     this.game_type = 0;
     this.game_status = 0;
     this.player_list = [];
-    this.start_time = 0;
-    this.last_time = 0;
     this.wait_time = consts.MAX_WAITING_TIME;
     this.cur_player_index = 0;
     this.cur_banker_index = 0;
@@ -116,6 +113,17 @@ game_logic_wrapper.prototype.tick = function(){
             break;
         }
         case consts.GAME_STATUS.GAME_STATUS_QUESTION:{
+            if(this.wait_time <= 0){
+                this.inc_cur_player_index();
+                this.notice_draw_card();
+                this.reset_wait_time();
+                this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
+            }else{
+                if(consts.MAX_WAITING_TIME >= this.wait_time){
+                    this.notice_remain_time();
+                }
+                --this.wait_time;
+            }
             break;
         }
     }
@@ -140,7 +148,10 @@ game_logic_wrapper.prototype.notice_discard = function(obj_card,except_myself){
         obj_card = this.player_list[this.cur_player_index].get_end_card();
     }
     this.set_last_card(obj_card.get_attr("type"),obj_card.get_attr("val"));
-    this.player_list[this.cur_player_index].del_card(obj_card.get_attr('type'),obj_card.get_attr('val'));
+    var res = this.player_list[this.cur_player_index].del_card(obj_card.get_attr('type'),obj_card.get_attr('val'));
+    if(!res){
+        mahjong_logger.debug("del_card error!");
+    }
     if(1) {
         mahjong_logger.debug("username %s,notice_discard obj_card %d %d, card_list_hand %j ", this.player_list[this.cur_player_index].get_username(), obj_card.get_attr('type'), obj_card.get_attr('val'), this.player_list[this.cur_player_index].get_card_list_hand());
     }
@@ -199,6 +210,7 @@ game_logic_wrapper.prototype.notice_draw_card = function(){
 game_logic_wrapper.prototype.inc_cur_player_index = function(){
     ++this.cur_player_index;
     this.cur_player_index = this.cur_player_index %  consts.MAX_NUM_PLAYER_PER_TABLE;
+    mahjong_logger.debug("inc_cur_player_index " + this.cur_player_index);
 };
 
 game_logic_wrapper.prototype.game_over = function(cb){
@@ -255,10 +267,17 @@ game_logic_wrapper.prototype.get_player_by_name = function(username){
 };
 
 game_logic_wrapper.prototype.check_all_card = function(){
-    //  check win
 
+    //  check win
+    for(var i = 0; i < consts.MAX_NUM_PLAYER_PER_TABLE - 1; ++i){
+        var tmp_player_index = (this.cur_player_index + 1 + i) % consts.MAX_NUM_PLAYER_PER_TABLE;
+        if(this.check_win(tmp_player_index)){
+            var action = consts.GAME_ACTION.GAME_ACTION_WIN + consts.GAME_ACTION.GAME_ACTION_CANCEL;
+
+        }
+    }
     //  check kong
-    for(var i = 0; i < consts.MAX_NUM_PLAYER_PER_TABLE; ++i){
+    for(var i = 0; i < consts.MAX_NUM_PLAYER_PER_TABLE - 1; ++i){
         var tmp_player_index = (this.cur_player_index + 1 + i) % consts.MAX_NUM_PLAYER_PER_TABLE;
         if(this.check_kong(tmp_player_index)){
             var action = consts.GAME_ACTION.GAME_ACTION_KONG + consts.GAME_ACTION.GAME_ACTION_CANCEL;
@@ -268,26 +287,39 @@ game_logic_wrapper.prototype.check_all_card = function(){
             var res_msg = {};
             res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_QUESTION;
             res_msg.action = action;
+            res_msg.card_type = this.last_card.get_attr('type');
+            res_msg.card_val= this.last_card.get_attr('val');
+            res_msg.player_index = tmp_player_index;
             mahjong_logger.debug("check kong---last card: %d,%d; %j",parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')),this.player_list[this.cur_player_index].pack_card_list_hand_data());
-            pomelo.app.rpc.lobby.lobby_remote.game_server_notice(null,this.player_list(tmp_player_index).get_username(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
+            pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,this.get_player_names(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
                 //  do nothing
             });
+            this.game_status = consts.GAME_STATUS.GAME_STATUS_QUESTION;
+            this.reset_wait_time();
+            return;
         }
     }
     //  check pong
-    for(i = 0; i < consts.MAX_NUM_PLAYER_PER_TABLE; ++i){
+    for(i = 0; i < consts.MAX_NUM_PLAYER_PER_TABLE - 1; ++i){
         var tmp_player_index = (this.cur_player_index + 1 + i) % consts.MAX_NUM_PLAYER_PER_TABLE;
         if(this.check_pong(tmp_player_index)){
             var action = consts.GAME_ACTION.GAME_ACTION_PONG + consts.GAME_ACTION.GAME_ACTION_CANCEL;
             var res_msg = {};
             res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_ACTION_QUESTION;
             res_msg.action = action;
+            res_msg.player_index = tmp_player_index;
+            res_msg.card_type = parseInt(this.last_card.get_attr('type'));
+            res_msg.card_val= parseInt(this.last_card.get_attr('val'));
             mahjong_logger.debug("check pong---last card: %d,%d; %j",parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')),this.player_list[this.cur_player_index].pack_card_list_hand_data());
-            pomelo.app.rpc.lobby.lobby_remote.game_server_notice(null,this.player_list[tmp_player_index].get_username(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
+            pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,this.get_player_names(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
                 //  do nothing
             });
+            this.game_status = consts.GAME_STATUS.GAME_STATUS_QUESTION;
+            this.reset_wait_time();
+            return;
         }
     }
+
     this.inc_cur_player_index();
     this.notice_draw_card();
     this.reset_wait_time();
@@ -303,7 +335,7 @@ game_logic_wrapper.prototype.leave_game = function(username,cb){
 };
 
 game_logic_wrapper.prototype.check_win = function(player_index){
-    this.player_list[player_index].add_card(parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')));
+    this.player_list[player_index].check_win(parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')));
 };
 
 game_logic_wrapper.prototype.get_player_index_by_name = function(username){
@@ -323,6 +355,10 @@ game_logic_wrapper.prototype.do_kong = function(player_index){
     return this.player_list[player_index].do_kong(parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')));
 };
 
+game_logic_wrapper.prototype.do_pong = function(player_index){
+    return this.player_list[player_index].do_pong(parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')));
+};
+
 game_logic_wrapper.prototype.check_pong = function(player_index){
     return this.player_list[player_index].check_pong(parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')));
 };
@@ -331,8 +367,48 @@ game_logic_wrapper.prototype.action_answer = function(username,action,cb){
     var __game_player = this.get_player_by_name(username);
     if(__game_player){
         if(consts.GAME_ACTION.GAME_ACTION_KONG == action){
-            if(this.check_kong(this.last_card.get_attr('type'),this.last_card.get_attr('val'))){
-                this.do_kong(this.last_card.get_attr('type'),this.last_card.get_attr('val'));
+            for(var i = 0; i < consts.MAX_NUM_PLAYER_PER_TABLE - 1; ++i){
+                var tmp_player_index = (this.cur_player_index + 1 + i) % consts.MAX_NUM_PLAYER_PER_TABLE;
+                if(this.check_kong(tmp_player_index)){
+                    this.do_kong(tmp_player_index);
+
+                    //  notice other player
+                    var res_msg = {};
+                    res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_CARD_KONG;
+                    res_msg.player_index = this.get_player_index_by_name(username);
+                    res_msg.card_type = parseInt(this.last_card.get_attr('type'));
+                    res_msg.card_val= parseInt(this.last_card.get_attr('val'));
+                    pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,this.get_player_names_except_myself(this.player_list[this.cur_player_index].get_username()),
+                        this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
+                        //  do nothing
+                    });
+                    mahjong_logger.debug("kong notice***last card: %d,%d; %j",parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')),this.player_list[this.cur_player_index].pack_card_list_hand_data());
+
+                    this.cur_player_index = this.get_player_index_by_name(username);
+                    this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
+                    this.reset_wait_time();
+                }
+            }
+        }else if(consts.GAME_ACTION.GAME_ACTION_PONG == action){
+            for(var i = 0; i < consts.MAX_NUM_PLAYER_PER_TABLE - 1; ++i){
+                var tmp_player_index = (this.cur_player_index + 1 + i) % consts.MAX_NUM_PLAYER_PER_TABLE;
+                if(this.check_pong(tmp_player_index)){
+                    this.do_pong(tmp_player_index);
+                    //  notice other player
+                    var res_msg = {};
+                    res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_CARD_PONG;
+                    res_msg.player_index = this.get_player_index_by_name(username);
+                    res_msg.card_type = parseInt(this.last_card.get_attr('type'));
+                    res_msg.card_val= parseInt(this.last_card.get_attr('val'));
+                    pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,this.get_player_names_except_myself(this.player_list[this.cur_player_index].get_username()),
+                        this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
+                        //  do nothing
+                    });
+                    mahjong_logger.debug("pong notice***last card: %d,%d; %j",parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')),this.player_list[this.cur_player_index].pack_card_list_hand_data());
+                    this.cur_player_index = this.get_player_index_by_name(username);
+                    this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
+                    this.reset_wait_time();
+                }
             }
         }
     }

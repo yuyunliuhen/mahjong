@@ -77,10 +77,11 @@ game_player_wrapper.prototype.del_card = function(card_type,card_val){
         for(var j = 0; j < this.card_list_hand[i].length; ++j){
             if(card_type == this.card_list_hand[i][j].get_attr('type') && card_val == this.card_list_hand[i][j].get_attr('val')){
                 this.card_list_hand[i].splice(j,1);
-                break;
+                return true;
             }
         }
     }
+    return false;
 };
 
 game_player_wrapper.prototype.clean_up = function(card_index){
@@ -133,20 +134,6 @@ game_player_wrapper.prototype.get_pos = function(){
     return this.pos;
 };
 
-/**
- *
- * @param is_draw_card: draw card (true) or discard(false)
- */
-game_player_wrapper.prototype.check_win = function(is_draw_card){
-    if(is_draw_card){
-
-    }
-};
-
-game_player_wrapper.prototype.is_grand_4_happiness = function(){
-
-};
-
 game_player_wrapper.prototype.get_card_list_hand = function(){
     return this.pack_card_list_hand_data();
 };
@@ -162,6 +149,7 @@ game_player_wrapper.prototype.check_kong = function(card_type,card_val){
                     __object_card.set_attr('type',card_type);
                     __object_card.set_attr('val',card_val);
                     this.card_group_kong.push(__object_card);
+                    break;
                 }
             }
         }
@@ -176,11 +164,12 @@ game_player_wrapper.prototype.do_kong = function(card_type,card_val){
     this.add_card(card_type,card_val);
     for(var i = 0; i < this.card_group_kong.length; ++i){
         this.del_card(card_type,card_val);
+        this.del_card(card_type,card_val);
+        this.del_card(card_type,card_val);
+        this.del_card(card_type,card_val);
     }
     for(var j = 0; j < consts.MAX_NUM_CARD_KONG; ++j){
-        var __object_card = object_template.create_object_card();
-        __object_card.set_attr('type',card_type);
-        __object_card.set_attr('val',card_val);
+        var __object_card = this.create_card(card_type,card_val);
         if(__object_card){
             this.card_list_kong[card_type].push(__object_card);
         }
@@ -198,6 +187,7 @@ game_player_wrapper.prototype.check_pong = function(card_type,card_val){
                     __object_card.set_attr('type',card_type);
                     __object_card.set_attr('val',card_val);
                     this.card_group_pong.push(__object_card);
+                    break;
                 }
             }
         }
@@ -206,4 +196,340 @@ game_player_wrapper.prototype.check_pong = function(card_type,card_val){
         return true;
     }
     return false;
+};
+
+game_player_wrapper.prototype.do_pong = function(card_type,card_val){
+    this.add_card(card_type,card_val);
+    for(var i = 0; i < this.card_group_pong.length; ++i){
+        this.del_card(card_type,card_val);
+        this.del_card(card_type,card_val);
+        this.del_card(card_type,card_val);
+    }
+    for(var j = 0; j < consts.MAX_NUM_CARD_PONG; ++j){
+        var __object_card = this.create_card(card_type,card_val);
+        if(__object_card){
+            this.card_list_kong[card_type].push(__object_card);
+        }
+    }
+};
+
+game_player_wrapper.prototype.check_win = function(card_type,card_val){
+    this.add_card(card_type,card_val);
+    var res = this.check_win_actually(true);
+    this.del_card(card_type,card_val);
+    return res;
+};
+
+/**
+ *
+ * @param is_draw_card: draw card (true) or discard(false)
+ */
+game_player_wrapper.prototype.check_win_actually = function(is_draw_card){
+    if(is_draw_card){
+        if(this.is_common_hand()){
+            this.win_title = "common hand";
+            this.win_multiple = 1;
+            return true;
+        }
+        else if(this.is_grand_4_happiness()){
+            this.win_title = "grand 4 happiness";
+            this.win_multiple = 88;
+            return true;
+        }else if(this.is_grand_3_chiefs()){
+            this.win_title = "grand 3 chiefs";
+            this.win_multiple = 88;
+            return true;
+        }
+
+    }else{
+
+    }
+};
+
+game_player_wrapper.prototype.is_common_hand = function () {
+    var card_pairs = 0;
+    var length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON].length;
+    if (length) {
+        if (2 == length) {
+            if (!this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')))) {
+                return false;
+            } else {
+                ++card_pairs;
+            }
+        } else if (3 == length) {
+            if (!this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val')))) {
+                return false;
+            }
+        } else if (5 == length) {
+            if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val')))) {
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val')))){
+                ++card_pairs;
+            }else{
+                return false;
+            }
+        }else if (8 == length){
+            if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val')))) {
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val')))){
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val')))){
+                ++card_pairs;
+            }else{
+                return false;
+            }
+        }else if (11 == length){
+            if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][8].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][9].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][10].get_attr('val')))) {
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][8].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][9].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][10].get_attr('val')))){
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][8].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][9].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][10].get_attr('val')))){
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][8].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][9].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][10].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val')))){
+                ++card_pairs;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+        length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND].length;
+        if (2 == length) {
+            if (!this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')))) {
+                return false;
+            } else {
+                ++card_pairs;
+            }
+        } else if (3 == length) {
+            if (!this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val')))) {
+                return false;
+            }
+        } else if (5 == length) {
+            if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val')))) {
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val')))){
+                ++card_pairs;
+            }else{
+                return false;
+            }
+        }else if (8 == length){
+            if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val')))) {
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val')))){
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val')))){
+                ++card_pairs;
+            }else{
+                return false;
+            }
+        }else if (11 == length){
+            if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][8].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][9].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][10].get_attr('val')))) {
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][8].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][9].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][10].get_attr('val')))){
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][8].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][9].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][10].get_attr('val')))){
+                ++card_pairs;
+            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][0].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][1].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][3].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][4].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][5].get_attr('val'))) &&
+                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][8].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][9].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][10].get_attr('val'))) &&
+                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][6].get_attr('val')),
+                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][7].get_attr('val')))){
+                ++card_pairs;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+        length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER].length;
+    }
+    return false;
+};
+
+game_player_wrapper.prototype.is_grand_4_happiness = function(){
+    if(this.card_list_kong[consts.CARD_TYPE.CARD_TYPE_WIND].length == 16){
+        for(var i = 0; i < consts.CARD_TYPE_MAX; ++i){
+            if(this.card_list_hand[i].length == 2){
+                if(this.card_list_hand[i][0] == this.card_list_hand[i][1]){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+};
+
+game_player_wrapper.prototype.is_grand_3_chiefs = function(){
+    if(this.card_list_kong[consts.CARD_TYPE.CARD_TYPE_WIND].length == 12){
+        for(var i = 0; i < consts.CARD_TYPE_MAX; ++i){
+            if(this.card_list_hand[i].length == 2){
+                if(this.card_list_hand[i][0] == this.card_list_hand[i][1]){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+};
+
+game_player_wrapper.prototype.create_card = function(card_type,card_val){
+    var __object_card = object_template.create_object_card();
+    __object_card.set_attr('type',card_type);
+    __object_card.set_attr('val',card_val);
+    return __object_card;
+};
+
+game_player_wrapper.prototype.check_win = function(card_type,card_val){
+    return ;
+    this.add_card(card_type,card_val);
+    this.check_win_actually(true);
+    this.del_card(card_type,card_val);
+};
+
+game_player_wrapper.prototype.check_cards_aa = function(val1,val2){
+    return val1 == val2;
+};
+
+game_player_wrapper.prototype.check_cards_aaa = function(val1,val2,val3){
+    return (val1 == val2 && val2 == val3);
 };

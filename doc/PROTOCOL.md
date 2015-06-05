@@ -23,6 +23,19 @@
 	"msg_id":8
 }
 
+###询问回答
+发送
+{
+	"msg_id":9,
+	"username":"",
+	"action":1000
+}
+返回
+{
+	"msg_id":9
+}
+
+
 ### 找庄通知
 {
 	"msg_id":1003,
@@ -60,12 +73,33 @@
 }
 
 ###询问(胡/杠/碰)
-{
-	"msg_id":1008，
-	"action":1111
-}
 action定义:
 GAME_ACTION_PONG:1,
 GAME_ACTION_KONG:10,
 GAME_ACTION_WIN:100,
 GAME_ACTION_CANCEL:1000
+{
+	"msg_id":1008，
+	"action":1111,
+	"card_type":0,
+	"card_val":1,
+	"player_index":1,
+}
+
+###杠牌通知
+{
+	"msg_id":1009，
+	"card_type":0,
+	"card_val":1,
+	"player_index":1,
+}
+
+###碰牌通知
+{
+	"msg_id":1010，
+	"card_type":0,
+	"card_val":1,
+	"player_index":1,
+}
+
+
