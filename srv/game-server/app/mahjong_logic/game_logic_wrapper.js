@@ -324,6 +324,19 @@ game_logic_wrapper.prototype.check_all_card = function(){
 
     this.inc_cur_player_index();
     this.notice_draw_card();
+    //  check ready hand
+    if(this.check_ready_hand()){
+        var action = consts.GAME_ACTION.GAME_ACTION_READY_HAND + consts.GAME_ACTION.GAME_ACTION_CANCEL;
+        var res_msg = {};
+        res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_ACTION_QUESTION;
+        res_msg.action = action;
+        mahjong_logger.debug("check ready hand--- %j",this.player_list[this.cur_player_index].pack_card_list_hand_data());
+        pomelo.app.rpc.lobby.lobby_remote.game_server_notice(null,this.player_list[this.cur_player_index].get_username(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
+            //  do nothing
+        });
+        this.game_status = consts.GAME_STATUS.GAME_STATUS_QUESTION;
+        this.reset_wait_time();
+    }
     this.reset_wait_time();
 };
 
@@ -339,6 +352,11 @@ game_logic_wrapper.prototype.leave_game = function(username,cb){
 game_logic_wrapper.prototype.check_win = function(player_index){
     this.player_list[player_index].check_win(parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')));
 };
+
+game_logic_wrapper.prototype.check_ready_hand = function(player_index){
+    return this.player_list[player_index].check_ready_hand();
+};
+
 
 game_logic_wrapper.prototype.get_player_index_by_name = function(username){
     for(var i = 0; i < this.player_list.length; ++i){

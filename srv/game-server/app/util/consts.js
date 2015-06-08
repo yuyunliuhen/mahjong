@@ -61,7 +61,9 @@ module.exports = {
         //  Ìõ
         CARD_TYPE_BAMBOO:3,
         //  Í²
-        CARD_TYPE_DOT:4
+        CARD_TYPE_DOT:4,
+
+        CARD_TYPE_MAX:5
     },
     CARD_TOTAL:136,
     CARD_TOTAL_FIRST_PER_PEOPLE:13,
@@ -82,7 +84,8 @@ module.exports = {
         GAME_ACTION_PONG:1,
         GAME_ACTION_KONG:10,
         GAME_ACTION_WIN:100,
-        GAME_ACTION_CANCEL:1000
+        GAME_ACTION_CANCEL:1000,
+        GAME_ACTION_READY_HAND:10000
     }
 }
 ;
