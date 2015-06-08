@@ -32,7 +32,12 @@
 }
 返回
 {
-	"msg_id":9
+	"msg_id":9,
+	data:{
+		"action":10,
+		kong_draw_card_type:1
+		kong_draw_card_val:1
+	}
 }
 
 
@@ -83,15 +88,19 @@ GAME_ACTION_CANCEL:1000
 	"action":1111,
 	"card_type":0,
 	"card_val":1,
-	"player_index":1,
+	"pong_or_kong_player_index":1,		
+	"cur_player_index":1,				
 }
+pong_or_kong_player_index：碰或者杠玩家索引	
+cur_player_index：当前出牌玩家索引
+
 
 ###杠牌通知
 {
 	"msg_id":1009，
 	"card_type":0,
 	"card_val":1,
-	"player_index":1,
+	"player_index":1,	
 }
 
 ###碰牌通知

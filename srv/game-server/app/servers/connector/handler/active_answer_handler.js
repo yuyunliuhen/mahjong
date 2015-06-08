@@ -10,7 +10,8 @@ message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_ACTION_ANSWER, function(msg, sessio
     var action = msg.action;
     var res_msg = {};
     res_msg.msg_id = msg.msg_id;
-    pomelo.app.rpc.lobby.lobby_remote.action_answer(session, username,action,pomelo.app.get('serverId'), function(){
+    pomelo.app.rpc.lobby.lobby_remote.action_answer(session, username,action,pomelo.app.get('serverId'), function(data){
+        res_msg.data = res_msg;
         next(null, res_msg);
     });
 });
