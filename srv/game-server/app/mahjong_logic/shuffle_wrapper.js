@@ -62,6 +62,7 @@ shuffle_wrapper.prototype.shuffle = function(){
         this.card_data.push(object_card);
         this.card_data.push(object_card);
     }
+
     //  random shuffle
     for (i = 0; i < this.card_data.length; i++) {
         var rand = parseInt(this.card_data.length * Math.random());
@@ -69,6 +70,35 @@ shuffle_wrapper.prototype.shuffle = function(){
         this.card_data[i] = this.card_data[rand];
         this.card_data[rand] = temp;
     }
+
+    //  test begin
+    this.card_data[0].set_attr('type',0);
+    this.card_data[0].set_attr('val',1);
+    this.card_data[1].set_attr('type',0);
+    this.card_data[1].set_attr('val',1);
+    this.card_data[2].set_attr('type',2);
+    this.card_data[2].set_attr('val',1);
+    this.card_data[3].set_attr('type',2);
+    this.card_data[3].set_attr('val',2);
+    this.card_data[4].set_attr('type',2);
+    this.card_data[4].set_attr('val',3);
+    this.card_data[5].set_attr('type',2);
+    this.card_data[5].set_attr('val',4);
+    this.card_data[6].set_attr('type',2);
+    this.card_data[6].set_attr('val',5);
+    this.card_data[7].set_attr('type',2);
+    this.card_data[7].set_attr('val',6);
+    this.card_data[8].set_attr('type',2);
+    this.card_data[8].set_attr('val',7);
+    this.card_data[9].set_attr('type',2);
+    this.card_data[9].set_attr('val',8);
+    this.card_data[10].set_attr('type',2);
+    this.card_data[10].set_attr('val',9);
+    this.card_data[11].set_attr('type',3);
+    this.card_data[11].set_attr('val',3);
+    this.card_data[12].set_attr('type',3);
+    this.card_data[12].set_attr('val',4);
+    //  test end
 };
 
 shuffle_wrapper.prototype.get_new_card = function(){

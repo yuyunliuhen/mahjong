@@ -248,6 +248,25 @@ game_player_wrapper.prototype.check_win_actually = function(is_draw_card){
 
 game_player_wrapper.prototype.check_ready_hand = function(){
     var result = false;
+    for(var m = this.get_card_count() - 1; m > 0 ; --m){
+        var obj_card = this.get_card_by_index(m);
+        if(obj_card){
+            var card_type = obj_card.get_attr("type");
+            var card_val = obj_card.get_attr("val");
+            this.del_card(card_type,card_val);
+            if(this.check_ready_hand_actually()){
+                this.add_card(card_type,card_val);
+                result = true;
+                break;
+            }
+            this.add_card(card_type,card_val);
+        }
+    }
+    return result;
+};
+
+game_player_wrapper.prototype.check_ready_hand_actually = function(){
+    var result = false;
     for(var i = 0; i < consts.CARD_DRAGON_MAX_NUM; ++i){
         this.add_card(consts.CARD_TYPE.CARD_TYPE_DRAGON,i + 1);
         if(this.check_win_actually(true)){
@@ -263,13 +282,16 @@ game_player_wrapper.prototype.check_ready_hand = function(){
         this.del_card(consts.CARD_TYPE.CARD_TYPE_WIND,i + 1);
     }
 
-    for(i = 0; i < consts.CARD_TYPE.CARD_TYPE_MAX; ++i){
+    for(i = 2; i < consts.CARD_TYPE.CARD_TYPE_MAX; ++i){
         for(var j = 0; j < consts.CARD_CHARACTER_MAX_NUM; ++j){
             this.add_card(i,j + 1);
             if(this.check_win_actually(true)){
                 result = true;
             }
             this.del_card(i,j + 1);
+            if(result){
+                break;
+            }
         }
     }
     return result;
@@ -391,237 +413,468 @@ game_player_wrapper.prototype.is_common_hand = function () {
             }else{
                 return false;
             }
-        }else{
-            return false;
         }
         length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND].length;
-        if (2 == length) {
-            if (!this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')))) {
-                return false;
-            } else {
-                ++card_pairs;
-            }
-        } else if (3 == length) {
-            if (!this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val')))) {
-                return false;
-            }
-        } else if (5 == length) {
-            if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val')))) {
-                ++card_pairs;
-            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
-                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val')))){
-                ++card_pairs;
-            }else{
-                return false;
-            }
-        }else if (8 == length){
-            if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val')))) {
-                ++card_pairs;
-            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
-                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val')))){
-                ++card_pairs;
-            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val'))) &&
-                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val')))){
-                ++card_pairs;
-            }else{
-                return false;
-            }
-        }else if (11 == length){
-            if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][8].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][9].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][10].get_attr('val')))) {
-                ++card_pairs;
-            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
-                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][8].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][9].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][10].get_attr('val')))){
-                ++card_pairs;
-            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val'))) &&
-                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][8].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][9].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][10].get_attr('val')))){
-                ++card_pairs;
-            }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val'))) &&
-                this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][8].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][9].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][10].get_attr('val'))) &&
-                this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val')))){
-                ++card_pairs;
-            }else{
-                return false;
-            }
-        }else{
-            return false;
-        }
-        length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER].length;
-        if (2 == length) {
-            if (!this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')))) {
-                return false;
-            } else {
-                ++card_pairs;
-            }
-        }else if (3 == length) {
-            if (!this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')))) {
-                if (!this.check_cards_abc(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
-                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
-                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')))){
+        if(length){
+            if (2 == length) {
+                if (!this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')))) {
+                    return false;
+                } else {
+                    ++card_pairs;
+                }
+            } else if (3 == length) {
+                if (!this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val')))) {
+                    return false;
+                }
+            } else if (5 == length) {
+                if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val')))) {
+                    ++card_pairs;
+                }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
+                    this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val')))){
+                    ++card_pairs;
+                }else{
+                    return false;
+                }
+            }else if (8 == length){
+                if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val')))) {
+                    ++card_pairs;
+                }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
+                    this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val')))){
+                    ++card_pairs;
+                }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val'))) &&
+                    this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val')))){
+                    ++card_pairs;
+                }else{
+                    return false;
+                }
+            }else if (11 == length){
+                if (this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DRAGON][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][10].get_attr('val')))) {
+                    ++card_pairs;
+                }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
+                    this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][10].get_attr('val')))){
+                    ++card_pairs;
+                }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val'))) &&
+                    this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][10].get_attr('val')))){
+                    ++card_pairs;
+                }else if(this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][2].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][5].get_attr('val'))) &&
+                    this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][10].get_attr('val'))) &&
+                    this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND][7].get_attr('val')))){
+                    ++card_pairs;
+                }else{
                     return false;
                 }
             }
-        }else if (5 == length) {
-            if(this.check_cards_5(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')))){
-                return false;
-            }
-            else{
-                ++card_pairs;
-            }
-        }else if (6 == length) {
-            if(this.check_cards_6(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')))){
-                return false;
-            }
-        }else if (8 == length) {
-            if(this.check_cards_8(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][7].get_attr('val')))){
-                return false;
-            }
-        }else if (9 == length) {
-            if(this.check_cards_9(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][7].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][8].get_attr('val')))){
-                return false;
-            }
-        }else if (11 == length) {
-            if(this.check_cards_11(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][7].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][8].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][9].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][10].get_attr('val')))){
-                return false;
-            }else{
-                ++card_pairs;
-            }
-        }else if (12 == length) {
-            if(this.check_cards_12(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][7].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][8].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][9].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][10].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][11].get_attr('val')))){
-                return false;
-            }
-        }else if (14 == length) {
-            if(this.check_cards_14(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][6].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][7].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][8].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][9].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][10].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][11].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][12].get_attr('val')),
-                    parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][13].get_attr('val')))){
-                return false;
-            }else{
-                ++card_pairs;
+        }
+        length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER].length;
+        if(length){
+            if (2 == length) {
+                if (!this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')))) {
+                    return false;
+                } else {
+                    ++card_pairs;
+                }
+            }else if (3 == length) {
+                if (!this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')))) {
+                    if (!this.check_cards_abc(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
+                            parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
+                            parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')))){
+                        return false;
+                    }
+                }
+            }else if (5 == length) {
+                if(!this.check_cards_5(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')))){
+                    return false;
+                }
+                else{
+                    ++card_pairs;
+                }
+            }else if (6 == length) {
+                if(!this.check_cards_6(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')))){
+                    return false;
+                }
+            }else if (8 == length) {
+                if(!this.check_cards_8(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][7].get_attr('val')))){
+                    return false;
+                }
+            }else if (9 == length) {
+                if(!this.check_cards_9(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][8].get_attr('val')))){
+                    return false;
+                }
+            }else if (11 == length) {
+                if(!this.check_cards_11(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][10].get_attr('val')))){
+                    return false;
+                }else{
+                    ++card_pairs;
+                }
+            }else if (12 == length) {
+                if(!this.check_cards_12(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][10].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][11].get_attr('val')))){
+                    return false;
+                }
+            }else if (14 == length) {
+                if(!this.check_cards_14(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][10].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][11].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][12].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER][13].get_attr('val')))){
+                    return false;
+                }else{
+                    ++card_pairs;
+                }
             }
         }
+        length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO].length;
+        if(length){
+            if (2 == length) {
+                if (!this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][1].get_attr('val')))) {
+                    return false;
+                } else {
+                    ++card_pairs;
+                }
+            }else if (3 == length) {
+                if (!this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][2].get_attr('val')))) {
+                    if (!this.check_cards_abc(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][0].get_attr('val')),
+                            parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][1].get_attr('val')),
+                            parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][2].get_attr('val')))){
+                        return false;
+                    }
+                }
+            }else if (5 == length) {
+                if(!this.check_cards_5(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][4].get_attr('val')))){
+                    return false;
+                }
+                else{
+                    ++card_pairs;
+                }
+            }else if (6 == length) {
+                if(!this.check_cards_6(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][5].get_attr('val')))){
+                    return false;
+                }
+            }else if (8 == length) {
+                if(!this.check_cards_8(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][7].get_attr('val')))){
+                    return false;
+                }
+            }else if (9 == length) {
+                if(!this.check_cards_9(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][8].get_attr('val')))){
+                    return false;
+                }
+            }else if (11 == length) {
+                if(!this.check_cards_11(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][10].get_attr('val')))){
+                    return false;
+                }else{
+                    ++card_pairs;
+                }
+            }else if (12 == length) {
+                if(!this.check_cards_12(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][10].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][11].get_attr('val')))){
+                    return false;
+                }
+            }else if (14 == length) {
+                if(!this.check_cards_14(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][10].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][11].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][12].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO][13].get_attr('val')))){
+                    return false;
+                }else{
+                    ++card_pairs;
+                }
+            }
+        }
+        length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT].length;
+        if(length){
+            if (2 == length) {
+                if (!this.check_cards_aa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][1].get_attr('val')))) {
+                    return false;
+                } else {
+                    ++card_pairs;
+                }
+            }else if (3 == length) {
+                if (!this.check_cards_aaa(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][2].get_attr('val')))) {
+                    if (!this.check_cards_abc(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][0].get_attr('val')),
+                            parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][1].get_attr('val')),
+                            parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][2].get_attr('val')))){
+                        return false;
+                    }
+                }
+            }else if (5 == length) {
+                if(!this.check_cards_5(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][4].get_attr('val')))){
+                    return false;
+                }
+                else{
+                    ++card_pairs;
+                }
+            }else if (6 == length) {
+                if(!this.check_cards_6(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][5].get_attr('val')))){
+                    return false;
+                }
+            }else if (8 == length) {
+                if(!this.check_cards_8(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][7].get_attr('val')))){
+                    return false;
+                }
+            }else if (9 == length) {
+                if(!this.check_cards_9(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][8].get_attr('val')))){
+                    return false;
+                }
+            }else if (11 == length) {
+                if(!this.check_cards_11(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][10].get_attr('val')))){
+                    return false;
+                }else{
+                    ++card_pairs;
+                }
+            }else if (12 == length) {
+                if(!this.check_cards_12(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][10].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][11].get_attr('val')))){
+                    return false;
+                }
+            }else if (14 == length) {
+                if(!this.check_cards_14(parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][0].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][1].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][2].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][3].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][4].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][5].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][6].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][7].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][8].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][9].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][10].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][11].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][12].get_attr('val')),
+                        parseInt(this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT][13].get_attr('val')))){
+                    return false;
+                }else{
+                    ++card_pairs;
+                }
+            }
+        }
+    }
+    if(1 == card_pairs){
+        return true;
     }
     return false;
 };
@@ -672,6 +925,10 @@ game_player_wrapper.prototype.check_cards_aa = function(val1,val2){
 
 game_player_wrapper.prototype.check_cards_aaa = function(val1,val2,val3){
     return (val1 == val2 && val2 == val3);
+};
+
+game_player_wrapper.prototype.check_cards_aaaa = function(val1,val2,val3,val4){
+    return (val1 == val2 && val2 == val3 && val3 == val4);
 };
 
 game_player_wrapper.prototype.check_cards_abc = function(val1,val2,val3){
@@ -849,4 +1106,27 @@ game_player_wrapper.prototype.get_card_index = function(card_type,card_val){
             tmp_index++;
         }
     }
+};
+
+game_player_wrapper.prototype.get_card_by_index = function(index){
+    var tmp_index = 0;
+    for(var i = 0; i < consts.CARD_TYPE.CARD_TYPE_MAX; ++i){
+        for(var j = 0; j < this.card_list_hand[i].length; ++j){
+            if(index == tmp_index){
+                return this.card_list_hand[i][j];
+            }
+            tmp_index++;
+        }
+    }
+    return null;
+};
+
+game_player_wrapper.prototype.get_card_count = function(){
+    var tmp_count = 0;
+    for(var i = 0; i < consts.CARD_TYPE.CARD_TYPE_MAX; ++i){
+        for(var j = 0; j < this.card_list_hand[i].length; ++j){
+            tmp_count++;
+        }
+    }
+    return tmp_count;
 };

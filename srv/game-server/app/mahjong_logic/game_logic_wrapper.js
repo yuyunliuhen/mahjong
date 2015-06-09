@@ -325,7 +325,7 @@ game_logic_wrapper.prototype.check_all_card = function(){
     this.inc_cur_player_index();
     this.notice_draw_card();
     //  check ready hand
-    if(this.check_ready_hand()){
+    if(this.check_ready_hand(this.cur_player_index)){
         var action = consts.GAME_ACTION.GAME_ACTION_READY_HAND + consts.GAME_ACTION.GAME_ACTION_CANCEL;
         var res_msg = {};
         res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_ACTION_QUESTION;
