@@ -36,6 +36,7 @@ game_player_wrapper.prototype.init = function(username,sid,pos){
     //  13 cards
     this.card_in_hand = [];
     this.flag_leave = 0;
+    this.flag_ready_hand = 0;
     this.pos = pos;
 };
 
@@ -128,6 +129,10 @@ game_player_wrapper.prototype.get_end_card = function(){
 
 game_player_wrapper.prototype.leave_game = function(){
     this.flag_leave = 1;
+};
+
+game_player_wrapper.prototype.ready_hand = function(){
+    this.flag_ready_hand = 1;
 };
 
 game_player_wrapper.prototype.get_pos = function(){
@@ -257,6 +262,11 @@ game_player_wrapper.prototype.check_ready_hand = function(){
             if(this.check_ready_hand_actually()){
                 this.add_card(card_type,card_val);
                 result = true;
+                if(this.flag_ready_hand == 0){
+                    this.ready_hand();
+                }else{
+                    result = false;
+                }
                 break;
             }
             this.add_card(card_type,card_val);

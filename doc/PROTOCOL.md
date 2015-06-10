@@ -111,4 +111,8 @@ cur_player_index：当前出牌玩家索引
 	"player_index":1,
 }
 
-
+###听牌通知
+{
+	"msg_id":1011，
+	"player_index":1,
+}
