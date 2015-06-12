@@ -131,8 +131,12 @@ game_player_wrapper.prototype.leave_game = function(){
     this.flag_leave = 1;
 };
 
-game_player_wrapper.prototype.ready_hand = function(){
+game_player_wrapper.prototype.set_ready_hand = function(){
     this.flag_ready_hand = 1;
+};
+
+game_player_wrapper.prototype.get_ready_hand = function(){
+    return this.flag_ready_hand;
 };
 
 game_player_wrapper.prototype.get_pos = function(){
@@ -262,11 +266,10 @@ game_player_wrapper.prototype.check_ready_hand = function(){
             if(this.check_ready_hand_actually()){
                 this.add_card(card_type,card_val);
                 result = true;
-                if(this.flag_ready_hand == 0){
-                    this.ready_hand();
-                }else{
+                if(this.get_ready_hand()){
                     result = false;
                 }
+                this.add_card(card_type,card_val);
                 break;
             }
             this.add_card(card_type,card_val);
@@ -300,7 +303,7 @@ game_player_wrapper.prototype.check_ready_hand_actually = function(){
             }
             this.del_card(i,j + 1);
             if(result){
-                break;
+                return result;
             }
         }
     }
@@ -423,6 +426,8 @@ game_player_wrapper.prototype.is_common_hand = function () {
             }else{
                 return false;
             }
+        }else{
+            return false;
         }
         length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_WIND].length;
         if(length){
@@ -538,6 +543,8 @@ game_player_wrapper.prototype.is_common_hand = function () {
                 }else{
                     return false;
                 }
+            }else{
+                return false;
             }
         }
         length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_CHARACTER].length;
@@ -652,6 +659,8 @@ game_player_wrapper.prototype.is_common_hand = function () {
                 }else{
                     ++card_pairs;
                 }
+            }else{
+                return false;
             }
         }
         length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_BAMBOO].length;
@@ -767,6 +776,9 @@ game_player_wrapper.prototype.is_common_hand = function () {
                     ++card_pairs;
                 }
             }
+            else{
+                return false;
+            }
         }
         length = this.card_list_hand[consts.CARD_TYPE.CARD_TYPE_DOT].length;
         if(length){
@@ -880,6 +892,8 @@ game_player_wrapper.prototype.is_common_hand = function () {
                 }else{
                     ++card_pairs;
                 }
+            }else{
+                return false;
             }
         }
     }
