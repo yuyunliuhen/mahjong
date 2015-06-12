@@ -290,8 +290,8 @@ game_logic_wrapper.prototype.check_all_card = function(){
             res_msg.card_type = this.last_card.get_attr('type');
             res_msg.card_val= this.last_card.get_attr('val');
             res_msg.player_index = this.tmp_player_index;
-            mahjong_logger.debug("check win---last card: %d,%d; %j",parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')),this.player_list[this.tmp_player_index].pack_card_list_hand_data());
-            pomelo.app.rpc.lobby.lobby_remote.game_server_notice(null,this.player_list[this.tmp_player_index].get_name(),this.player_list[this.tmp_player_index].get_sid(),res_msg,function(){
+            mahjong_logger.debug("check win---last card: %d,%d; %j",parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')),this.player_list[tmp_player_index].pack_card_list_hand_data());
+            pomelo.app.rpc.lobby.lobby_remote.game_server_notice(null,this.player_list[tmp_player_index].get_username(),this.player_list[tmp_player_index].get_sid(),res_msg,function(){
                 //  do nothing
             });
         }
@@ -373,7 +373,7 @@ game_logic_wrapper.prototype.leave_game = function(username,cb){
 };
 
 game_logic_wrapper.prototype.check_win = function(player_index){
-    this.player_list[player_index].check_win(parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')));
+    return this.player_list[player_index].check_win(parseInt(this.last_draw_card.get_attr('type')),parseInt(this.last_draw_card.get_attr('val')));
 };
 
 game_logic_wrapper.prototype.check_ready_hand = function(player_index){

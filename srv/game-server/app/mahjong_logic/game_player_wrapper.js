@@ -222,13 +222,6 @@ game_player_wrapper.prototype.do_pong = function(card_type,card_val){
     }
 };
 
-game_player_wrapper.prototype.check_win = function(card_type,card_val){
-    this.add_card(card_type,card_val);
-    var res = this.check_win_actually(true);
-    this.del_card(card_type,card_val);
-    return res;
-};
-
 /**
  *
  * @param is_draw_card: draw card (true) or discard(false)
@@ -249,9 +242,6 @@ game_player_wrapper.prototype.check_win_actually = function(is_draw_card){
             this.win_multiple = 88;
             return true;
         }
-
-    }else{
-        return this.check_ready_hand();
     }
 };
 
@@ -269,7 +259,6 @@ game_player_wrapper.prototype.check_ready_hand = function(){
                 if(this.get_ready_hand()){
                     result = false;
                 }
-                this.add_card(card_type,card_val);
                 break;
             }
             this.add_card(card_type,card_val);
@@ -937,10 +926,10 @@ game_player_wrapper.prototype.create_card = function(card_type,card_val){
 };
 
 game_player_wrapper.prototype.check_win = function(card_type,card_val){
-    return ;
     this.add_card(card_type,card_val);
-    this.check_win_actually(true);
+    var result = this.check_win_actually(true);
     this.del_card(card_type,card_val);
+    return result;
 };
 
 game_player_wrapper.prototype.check_cards_aa = function(val1,val2){
