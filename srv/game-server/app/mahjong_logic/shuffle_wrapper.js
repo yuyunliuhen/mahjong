@@ -110,6 +110,18 @@ shuffle_wrapper.prototype.get_new_card = function(){
     return tmp_object_card;
 };
 
+shuffle_wrapper.prototype.get_new_card_test = function(){
+    var tmp_object_card = null;
+    if( this.card_used_num < (consts.CARD_TOTAL - this.card_draw_num)){
+        tmp_object_card = this.card_data[this.card_used_num++];
+    }
+    if(tmp_object_card){
+        tmp_object_card.set_attr('type',3);
+        tmp_object_card.set_attr('val',5);
+    }
+    return tmp_object_card;
+};
+
 shuffle_wrapper.prototype.set_card_draw_num = function(num){
     this.card_draw_num = num;
 };

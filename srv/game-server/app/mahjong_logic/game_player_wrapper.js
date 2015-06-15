@@ -926,9 +926,7 @@ game_player_wrapper.prototype.create_card = function(card_type,card_val){
 };
 
 game_player_wrapper.prototype.check_win = function(card_type,card_val){
-    this.add_card(card_type,card_val);
     var result = this.check_win_actually(true);
-    this.del_card(card_type,card_val);
     return result;
 };
 
