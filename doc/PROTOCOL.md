@@ -115,6 +115,7 @@ cur_player_index：当前出牌玩家索引
 {
 	"msg_id":1011，
 	"player_index":1,
+	"cards_win":[[3,2],[3,5],[3,8]]
 }
 
 ###胡牌通知

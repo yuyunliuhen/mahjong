@@ -142,6 +142,9 @@ game_logic_wrapper.prototype.notice_find_banker = function(){
     var tmp_card = this.shuffle.get_new_card();
     res_msg.card_type = tmp_card.get_attr('type');
     res_msg.card_val= tmp_card.get_attr('val');
+    var tmp_hole_card = this.shuffle.get_hole_card_4_kong();
+    res_msg.hole_card_type = tmp_hole_card.get_attr('type');
+    res_msg.hole_card_val= tmp_hole_card.get_attr('val');
     res_msg.cur_banker_index = this.cur_banker_index;
     this.set_last_draw_card(tmp_card.get_attr('type'),tmp_card.get_attr('val'));
     this.player_list[this.cur_banker_index].add_card(tmp_card.get_attr('type'),tmp_card.get_attr('val'));
@@ -197,7 +200,7 @@ game_logic_wrapper.prototype.notice_remain_time = function(){
 
 game_logic_wrapper.prototype.notice_draw_card = function(){
     var res_msg = {};
-    var tmp_card = this.shuffle.get_new_card_test();
+    var tmp_card = this.shuffle.get_new_card();
     if(tmp_card){
         res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_DRAW_CARD;
         res_msg.card_type = tmp_card.get_attr('type');
@@ -256,6 +259,11 @@ game_logic_wrapper.prototype.game_over = function(cb){
 };
 
 game_logic_wrapper.prototype.discard = function(username,card_type,card_val,cb){
+    var tmp_player_index = this.get_player_index_by_name(username);
+    if(tmp_player_index != this.cur_player_index){
+        cb(0,card_type,card_val);
+        return;
+    }
     var __game_player = this.get_player_by_name(username);
     if(__game_player){
         var tmp_card = object_template.create_object('object_card');
@@ -265,7 +273,7 @@ game_logic_wrapper.prototype.discard = function(username,card_type,card_val,cb){
         this.notice_discard(tmp_card,true);
         this.check_all_card();
     }
-    cb();
+    cb(1,card_type,card_val);
 };
 
 game_logic_wrapper.prototype.get_player_names = function(){
@@ -515,8 +523,9 @@ game_logic_wrapper.prototype.action_answer = function(username,action,cb){
         }else if(consts.GAME_ACTION.GAME_ACTION_READY_HAND == action){
             //  notice other player
             var res_msg = {};
-            res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_CARD_READ_HAND;
+            res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_CARD_READY_HAND;
             res_msg.player_index = this.get_player_index_by_name(username);
+            res_msg.cards_win = this.player_list[res_msg.player_index].get_cards_win();
             this.player_list[res_msg.player_index].set_ready_hand();
             pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,this.get_player_names_except_myself(this.player_list[res_msg.player_index].get_username()),
                 this.player_list[res_msg.player_index].get_sid(),res_msg,function(){
@@ -524,7 +533,7 @@ game_logic_wrapper.prototype.action_answer = function(username,action,cb){
                 });
             this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
             this.reset_wait_time();
-        }else if(consts.GAME_ACTION.GAME_ACTION_KONG == action){
+        }else if(consts.GAME_ACTION.GAME_ACTION_WIN == action){
             //  notice other player
             var res_msg = {};
             res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_CARD_WIN;
@@ -533,7 +542,7 @@ game_logic_wrapper.prototype.action_answer = function(username,action,cb){
                 this.player_list[res_msg.player_index].get_sid(),res_msg,function(){
                     //  do nothing
                 });
-            this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
+            this.game_status = consts.GAME_STATUS.GAME_STATUS_OVER;
             this.reset_wait_time();
         }
     }

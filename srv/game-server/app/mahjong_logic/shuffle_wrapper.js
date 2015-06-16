@@ -11,6 +11,7 @@ var mahjong_logger = log4js.getLogger('mahjong-logger');
 var shuffle_wrapper = function(){
     this.card_data = [];
     this.card_draw_num = 0;
+    this.card_draw_num_index = 0;
     this.card_used_num = 0;
 };
 
@@ -55,16 +56,15 @@ shuffle_wrapper.prototype.shuffle = function(){
     }
     //  dot
     for(i = 1; i <= consts.CARD_DOT_MAX_NUM; ++i){
-        var object_card = object_template.create_object('object_card');
-        object_card.init(consts.CARD_TYPE.CARD_TYPE_DOT,i);
-        this.card_data.push(object_card);
-        this.card_data.push(object_card);
-        this.card_data.push(object_card);
-        this.card_data.push(object_card);
+        for (j = 0; j < consts.CARD_NUM_PER_TYPE; j++) {
+            var object_card = object_template.create_object('object_card');
+            object_card.init(consts.CARD_TYPE.CARD_TYPE_DOT, i);
+            this.card_data.push(object_card);
+        }
     }
 
     //  random shuffle
-    for (i = 0; i < this.card_data.length; i++) {
+    for (i = 0; i < this.card_data.length; ++i) {
         var rand = parseInt(this.card_data.length * Math.random());
         var temp = this.card_data[i];
         this.card_data[i] = this.card_data[rand];
@@ -72,10 +72,10 @@ shuffle_wrapper.prototype.shuffle = function(){
     }
     if(1){
         //  test begin
-        this.card_data[0].set_attr('type',0);
-        this.card_data[0].set_attr('val',1);
-        this.card_data[1].set_attr('type',0);
-        this.card_data[1].set_attr('val',1);
+        this.card_data[0].set_attr('type',4);
+        this.card_data[0].set_attr('val',2);
+        this.card_data[1].set_attr('type',4);
+        this.card_data[1].set_attr('val',2);
         this.card_data[2].set_attr('type',2);
         this.card_data[2].set_attr('val',1);
         this.card_data[3].set_attr('type',2);
@@ -100,6 +100,7 @@ shuffle_wrapper.prototype.shuffle = function(){
         this.card_data[12].set_attr('val',4);
         //  test end
     }
+    this.card_draw_num_index = this.card_data.length - 1;
 };
 
 shuffle_wrapper.prototype.get_new_card = function(){
@@ -124,4 +125,8 @@ shuffle_wrapper.prototype.get_new_card_test = function(){
 
 shuffle_wrapper.prototype.set_card_draw_num = function(num){
     this.card_draw_num = num;
+};
+
+shuffle_wrapper.prototype.get_hole_card_4_kong = function(){
+    return this.card_data[this.card_draw_num_index--];
 };
