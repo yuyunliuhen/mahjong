@@ -126,7 +126,21 @@ game_logic_wrapper.prototype.tick = function(){
                 this.notice_draw_card();
                 this.reset_wait_time();
                 this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
-
+            }else{
+                if(consts.MAX_WAITING_TIME >= this.wait_time){
+                    this.notice_remain_time();
+                }
+                --this.wait_time;
+            }
+            break;
+        }
+        case consts.GAME_STATUS.GAME_STATUS_QUESTION_READY_HAND:{
+            if(this.wait_time <= 0){
+                this.notice_discard();
+                this.inc_cur_player_index();
+                this.notice_draw_card();
+                this.reset_wait_time();
+                this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
             }else{
                 if(consts.MAX_WAITING_TIME >= this.wait_time){
                     this.notice_remain_time();
@@ -175,7 +189,7 @@ game_logic_wrapper.prototype.notice_discard = function(obj_card,except_myself){
             obj_card = this.player_list[this.cur_player_index].get_end_card();
         }
     }
-
+    this.set_last_card(obj_card.get_attr('type'),obj_card.get_attr('val'));
     var res = this.player_list[this.cur_player_index].del_card(obj_card.get_attr('type'),obj_card.get_attr('val'));
     if(!res){
         mahjong_logger.error("del_card error! %d,%d",obj_card.get_attr('type'),obj_card.get_attr('val'));
@@ -285,7 +299,6 @@ game_logic_wrapper.prototype.discard = function(username,card_type,card_val,cb){
         var tmp_card = object_template.create_object('object_card');
         tmp_card.set_attr('type',card_type);
         tmp_card.set_attr('val',card_val);
-        this.set_last_card(card_type,card_val);
         this.notice_discard(tmp_card,true);
         this.check_all_card();
     }
@@ -346,7 +359,7 @@ game_logic_wrapper.prototype.check_all_card = function(){
     //  check kong
     for(var i = 0; i < consts.MAX_NUM_PLAYER_PER_TABLE - 1; ++i){
         var tmp_player_index = (this.cur_player_index + 1 + i) % consts.MAX_NUM_PLAYER_PER_TABLE;
-        if(this.check_kong(tmp_player_index)){
+        if(!this.player_list[tmp_player_index].get_hosting() && this.check_kong(tmp_player_index)){
             var action = consts.GAME_ACTION.GAME_ACTION_KONG + consts.GAME_ACTION.GAME_ACTION_CANCEL;
             if(this.check_pong(tmp_player_index)){
                 action = action + consts.GAME_ACTION.GAME_ACTION_PONG;
@@ -370,7 +383,7 @@ game_logic_wrapper.prototype.check_all_card = function(){
     //  check pong
     for(i = 0; i < consts.MAX_NUM_PLAYER_PER_TABLE - 1; ++i){
         var tmp_player_index = (this.cur_player_index + 1 + i) % consts.MAX_NUM_PLAYER_PER_TABLE;
-        if(this.check_pong(tmp_player_index)){
+        if(!this.player_list[tmp_player_index].get_hosting() && this.check_pong(tmp_player_index)){
             var action = consts.GAME_ACTION.GAME_ACTION_PONG + consts.GAME_ACTION.GAME_ACTION_CANCEL;
             var res_msg = {};
             res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_ACTION_QUESTION;
@@ -392,7 +405,7 @@ game_logic_wrapper.prototype.check_all_card = function(){
     this.inc_cur_player_index();
     this.notice_draw_card();
     //  check ready hand
-    if(this.check_ready_hand(this.cur_player_index)){
+    if( this.player_list[this.cur_player_index].get_hosting() && this.check_ready_hand(this.cur_player_index)){
         this.ready_hand_notice();
     }
     this.reset_wait_time();
@@ -407,7 +420,7 @@ game_logic_wrapper.prototype.ready_hand_notice = function(){
     pomelo.app.rpc.lobby.lobby_remote.game_server_notice(null,this.player_list[this.cur_player_index].get_username(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
         //  do nothing
     });
-    this.game_status = consts.GAME_STATUS.GAME_STATUS_QUESTION;
+    this.game_status = consts.GAME_STATUS.GAME_STATUS_QUESTION_READY_HAND;
 };
 
 game_logic_wrapper.prototype.reset_wait_time = function(){
