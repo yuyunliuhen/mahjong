@@ -224,6 +224,7 @@ game_logic_wrapper.prototype.notice_draw_card = function(){
         pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,this.get_player_names(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
             //  do nothing
         });
+        this.game_status = consts.GAME_STATUS.GAME_STATUS_OVER;
     }
 
     //  check win
@@ -262,8 +263,10 @@ game_logic_wrapper.prototype.discard = function(username,card_type,card_val,cb){
     var tmp_player_index = this.get_player_index_by_name(username);
     if(tmp_player_index != this.cur_player_index){
         cb(0,card_type,card_val);
+        mahjong_logger.debug("discard  failed" + username + "    %d : %d",card_type,card_val);
         return;
     }
+    mahjong_logger.debug("discard  success " + username + "    %d : %d",card_type,card_val);
     var __game_player = this.get_player_by_name(username);
     if(__game_player){
         var tmp_card = object_template.create_object('object_card');
@@ -274,6 +277,7 @@ game_logic_wrapper.prototype.discard = function(username,card_type,card_val,cb){
         this.check_all_card();
     }
     cb(1,card_type,card_val);
+
 };
 
 game_logic_wrapper.prototype.get_player_names = function(){
@@ -470,6 +474,9 @@ game_logic_wrapper.prototype.action_answer = function(username,action,cb){
                     var tmp_card = this.shuffle.get_new_card();
                     data.kong_draw_card_type = parseInt(tmp_card.get_attr('type'));
                     data.kong_draw_card_val = parseInt(tmp_card.get_attr('val'));
+                    var tmp_hole_card = this.shuffle.get_hole_card_4_kong();
+                    res_msg.hole_card_type = tmp_hole_card.get_attr('type');
+                    res_msg.hole_card_val= tmp_hole_card.get_attr('val');
                     this.player_list[this.cur_player_index].add_card(data.kong_draw_card_type,data.kong_draw_card_val);
 
                     this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;

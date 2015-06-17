@@ -70,7 +70,7 @@ shuffle_wrapper.prototype.shuffle = function(){
         this.card_data[i] = this.card_data[rand];
         this.card_data[rand] = temp;
     }
-    if(1){
+    if(0){
         //  test begin
         this.card_data[0].set_attr('type',4);
         this.card_data[0].set_attr('val',2);

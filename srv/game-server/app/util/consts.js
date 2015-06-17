@@ -88,7 +88,7 @@ module.exports = {
         GAME_QUESTION_PONG:2,
         GAME_QUESTION_READ_HAND:3
     },
-    MAX_WAITING_TIME:5,
+    MAX_WAITING_TIME:6,
     GAME_ACTION: {
         GAME_ACTION_PONG:1,
         GAME_ACTION_KONG:10,
