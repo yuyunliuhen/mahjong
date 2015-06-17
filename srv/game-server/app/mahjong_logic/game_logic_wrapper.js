@@ -92,10 +92,7 @@ game_logic_wrapper.prototype.tick = function(){
             this.cur_player_index = Math.floor(Math.random()*this.player_list.length);
             this.cur_player_index = 0;
             this.cur_banker_index = this.cur_player_index;
-            if(0){
-                this.notice_draw_card();
-            }
-            else{
+            {
                 this.notice_find_banker();
                 this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
                 //  check ready hand
@@ -108,8 +105,13 @@ game_logic_wrapper.prototype.tick = function(){
         }
         case consts.GAME_STATUS.GAME_STATUS_RUNNING:{
             if(this.wait_time <= 0){
-                this.notice_discard();
-                this.check_all_card();
+                this.reset_wait_time();
+                if(!this.player_list[this.cur_player_index].get_hosting()){
+                    this.game_status = consts.GAME_STATUS.GAME_STATUS_WAITING_DISCARD;
+                }else{
+                    this.notice_discard();
+                    this.check_all_card();
+                }
             }else{
                 if(consts.MAX_WAITING_TIME >= this.wait_time){
                     this.notice_remain_time();
@@ -120,15 +122,26 @@ game_logic_wrapper.prototype.tick = function(){
         }
         case consts.GAME_STATUS.GAME_STATUS_QUESTION:{
             if(this.wait_time <= 0){
-                this.notice_discard();
                 this.inc_cur_player_index();
                 this.notice_draw_card();
                 this.reset_wait_time();
                 this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
+
             }else{
                 if(consts.MAX_WAITING_TIME >= this.wait_time){
                     this.notice_remain_time();
                 }
+                --this.wait_time;
+            }
+            break;
+        }
+        case consts.GAME_STATUS.GAME_STATUS_WAITING_DISCARD:{
+            if(this.wait_time <= 0){
+                this.player_list[this.cur_player_index].set_hosting(1);
+                this.notice_discard();
+                this.check_all_card();
+                this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
+            }else{
                 --this.wait_time;
             }
             break;
@@ -277,7 +290,25 @@ game_logic_wrapper.prototype.discard = function(username,card_type,card_val,cb){
         this.check_all_card();
     }
     cb(1,card_type,card_val);
+};
 
+game_logic_wrapper.prototype.lock_card_already = function(username,cb){
+    var tmp_player_index = this.get_player_index_by_name(username);
+    if(tmp_player_index != this.cur_player_index){
+        mahjong_logger.error("lock_card_already  failed " + username);
+        cb();
+        return;
+    }
+    this.game_status = consts.GAME_STATUS.GAME_STATUS_RUNNING;
+    this.notice_discard();
+    this.check_all_card();
+    cb();
+};
+
+game_logic_wrapper.prototype.cancel_hosting = function(username,cb){
+    var tmp_player_index = this.get_player_index_by_name(username);
+    this.player_list[this.cur_player_index].set_hosting(0);
+    cb();
 };
 
 game_logic_wrapper.prototype.get_player_names = function(){

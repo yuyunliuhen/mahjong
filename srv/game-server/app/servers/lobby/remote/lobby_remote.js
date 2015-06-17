@@ -150,6 +150,24 @@ lobby_remote.prototype.discard = function(username,card_type,card_val,sid,cb){
     pomelo.app.rpc.mahjong.mahjong_remote.discard(null,username,tid,card_type,card_val,cb);
 };
 
+lobby_remote.prototype.lock_card_already = function(username,sid,cb){
+    var uid = username + '*';
+    var sessions_wrapper = pomelo.app.get('sessions_wrapper');
+    var lid = sessions_wrapper.get_lid(uid);
+    var rid = sessions_wrapper.get_rid(uid);
+    var tid = sessions_wrapper.get_tid(uid);
+    pomelo.app.rpc.mahjong.mahjong_remote.lock_card_already(null,username,tid,cb);
+};
+
+lobby_remote.prototype.cancel_hosting = function(username,sid,cb){
+    var uid = username + '*';
+    var sessions_wrapper = pomelo.app.get('sessions_wrapper');
+    var lid = sessions_wrapper.get_lid(uid);
+    var rid = sessions_wrapper.get_rid(uid);
+    var tid = sessions_wrapper.get_tid(uid);
+    pomelo.app.rpc.mahjong.mahjong_remote.cancel_hosting(null,username,tid,cb);
+};
+
 lobby_remote.prototype.action_answer = function(username,action,cb){
     var uid = username + '*';
     var sessions_wrapper = pomelo.app.get('sessions_wrapper');

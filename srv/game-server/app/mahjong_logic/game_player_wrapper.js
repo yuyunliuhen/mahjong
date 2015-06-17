@@ -37,6 +37,7 @@ game_player_wrapper.prototype.init = function(username,sid,pos){
     this.card_in_hand = [];
     this.flag_leave = 0;
     this.flag_ready_hand = 0;
+    this.flag_hosting = 0;
     this.pos = pos;
     this.cards_win = [];
 };
@@ -134,6 +135,14 @@ game_player_wrapper.prototype.leave_game = function(){
 
 game_player_wrapper.prototype.set_ready_hand = function(){
     this.flag_ready_hand = 1;
+};
+
+game_player_wrapper.prototype.set_hosting = function(flag_hosting){
+    this.flag_hosting = flag_hosting;
+};
+
+game_player_wrapper.prototype.get_hosting = function(){
+    return this.flag_hosting;
 };
 
 game_player_wrapper.prototype.get_ready_hand = function(){

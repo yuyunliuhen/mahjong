@@ -32,6 +32,22 @@ game_logic_manager.prototype.discard = function(username,tid,card_type,card_val,
     }
 };
 
+game_logic_manager.prototype.lock_card_already = function(username,tid,cb){
+    for(var v in this.table_game_logic){
+        if(v == tid){
+            this.table_game_logic[v].lock_card_already(username,cb);
+        }
+    }
+};
+
+game_logic_manager.prototype.cancel_hosting = function(username,tid,cb){
+    for(var v in this.table_game_logic){
+        if(v == tid){
+            this.table_game_logic[v].cancel_hosting(username,cb);
+        }
+    }
+};
+
 game_logic_manager.prototype.tick = function(){
     var self = this;
     var interval_time = 1*1000;

@@ -25,6 +25,14 @@ mahjong_remote.prototype.discard = function(username,tid,card_type,card_val,cb) 
     pomelo.app.get('game_logic_manager').discard(username,tid,card_type,card_val,cb);
 };
 
+mahjong_remote.prototype.lock_card_already = function(username,tid,cb) {
+    pomelo.app.get('game_logic_manager').lock_card_already(username,tid,cb);
+};
+
+mahjong_remote.prototype.cancel_hosting = function(username,tid,cb) {
+    pomelo.app.get('game_logic_manager').cancel_hosting(username,tid,cb);
+};
+
 mahjong_remote.prototype.leave_game = function(username,tid,cb){
     pomelo.app.get('game_logic_manager').leave_game(username,tid,cb);
 };
