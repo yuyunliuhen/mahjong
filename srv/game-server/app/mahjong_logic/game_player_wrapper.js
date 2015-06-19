@@ -163,7 +163,7 @@ game_player_wrapper.prototype.check_kong = function(card_type,card_val){
     if(card_list_kong_length != 0){
         if(card_list_kong_length >= 3){
             for(var i = 0; i < card_list_kong_length - 2; ++i){
-                if(this.card_list_hand[card_type][i] == card_val && this.card_list_hand[card_type][i + 1] == card_val && this.card_list_hand[card_type][i + 2] == card_val){
+                if(this.card_list_hand[card_type][i].get_attr('val') == card_val && this.card_list_hand[card_type][i + 1].get_attr('val') == card_val && this.card_list_hand[card_type][i + 2].get_attr('val') == card_val){
                     var __object_card = object_template.create_object_card();
                     __object_card.set_attr('type',card_type);
                     __object_card.set_attr('val',card_val);

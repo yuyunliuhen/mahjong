@@ -70,6 +70,7 @@ shuffle_wrapper.prototype.shuffle = function(){
         this.card_data[i] = this.card_data[rand];
         this.card_data[rand] = temp;
     }
+    //  test win
     if(0){
         //  test begin
         this.card_data[0].set_attr('type',4);
@@ -100,6 +101,38 @@ shuffle_wrapper.prototype.shuffle = function(){
         this.card_data[12].set_attr('val',4);
         //  test end
     }
+
+    //  test pong
+    if(1){
+        //  test begin
+        this.card_data[0].set_attr('type',4);
+        this.card_data[0].set_attr('val',2);
+        this.card_data[1].set_attr('type',4);
+        this.card_data[1].set_attr('val',2);
+        this.card_data[2].set_attr('type',4);
+        this.card_data[2].set_attr('val',2);
+        this.card_data[3].set_attr('type',2);
+        this.card_data[3].set_attr('val',2);
+        this.card_data[4].set_attr('type',2);
+        this.card_data[4].set_attr('val',2);
+        this.card_data[5].set_attr('type',2);
+        this.card_data[5].set_attr('val',2);
+        this.card_data[6].set_attr('type',2);
+        this.card_data[6].set_attr('val',5);
+        this.card_data[7].set_attr('type',2);
+        this.card_data[7].set_attr('val',5);
+        this.card_data[8].set_attr('type',2);
+        this.card_data[8].set_attr('val',5);
+        this.card_data[9].set_attr('type',2);
+        this.card_data[9].set_attr('val',7);
+        this.card_data[10].set_attr('type',2);
+        this.card_data[10].set_attr('val',8);
+        this.card_data[11].set_attr('type',3);
+        this.card_data[11].set_attr('val',3);
+        this.card_data[12].set_attr('type',3);
+        this.card_data[12].set_attr('val',3);
+        //  test end
+    }
     this.card_draw_num_index = this.card_data.length - 1;
 };
 
@@ -117,8 +150,8 @@ shuffle_wrapper.prototype.get_new_card_test = function(){
         tmp_object_card = this.card_data[this.card_used_num++];
     }
     if(tmp_object_card){
-        tmp_object_card.set_attr('type',3);
-        tmp_object_card.set_attr('val',5);
+        tmp_object_card.set_attr('type',2);
+        tmp_object_card.set_attr('val',6);
     }
     return tmp_object_card;
 };
@@ -128,5 +161,9 @@ shuffle_wrapper.prototype.set_card_draw_num = function(num){
 };
 
 shuffle_wrapper.prototype.get_hole_card_4_kong = function(){
-    return this.card_data[this.card_draw_num_index--];
+    return this.card_data[this.card_draw_num_index];
+};
+
+shuffle_wrapper.prototype.get_next_hole_card_4_kong = function(){
+    return this.card_data[--this.card_draw_num_index];
 };
