@@ -62,7 +62,6 @@ shuffle_wrapper.prototype.shuffle = function(){
             this.card_data.push(object_card);
         }
     }
-
     //  random shuffle
     for (i = 0; i < this.card_data.length; ++i) {
         var rand = parseInt(this.card_data.length * Math.random());
@@ -103,12 +102,12 @@ shuffle_wrapper.prototype.shuffle = function(){
     }
 
     //  test pong
-    if(1){
+    if(0){
         //  test begin
         this.card_data[0].set_attr('type',4);
         this.card_data[0].set_attr('val',2);
         this.card_data[1].set_attr('type',4);
-        this.card_data[1].set_attr('val',2);
+        this.card_data[1].set_attr('val',3);
         this.card_data[2].set_attr('type',4);
         this.card_data[2].set_attr('val',2);
         this.card_data[3].set_attr('type',2);
@@ -130,7 +129,7 @@ shuffle_wrapper.prototype.shuffle = function(){
         this.card_data[11].set_attr('type',3);
         this.card_data[11].set_attr('val',3);
         this.card_data[12].set_attr('type',3);
-        this.card_data[12].set_attr('val',3);
+        this.card_data[12].set_attr('val',4);
         //  test end
     }
     this.card_draw_num_index = this.card_data.length - 1;
@@ -151,7 +150,7 @@ shuffle_wrapper.prototype.get_new_card_test = function(){
     }
     if(tmp_object_card){
         tmp_object_card.set_attr('type',2);
-        tmp_object_card.set_attr('val',6);
+        tmp_object_card.set_attr('val',2);
     }
     return tmp_object_card;
 };
@@ -166,4 +165,17 @@ shuffle_wrapper.prototype.get_hole_card_4_kong = function(){
 
 shuffle_wrapper.prototype.get_next_hole_card_4_kong = function(){
     return this.card_data[--this.card_draw_num_index];
+};
+
+//	get specialfied card from shuffle card
+shuffle_wrapper.prototype.get_card_specified = function(card_type,card_val){
+    for (i = this.card_used_num; i < this.card_data.length; ++i) {
+		if( this.card_data[i].get_attr('type') == card_type && this.card_data[i].get_attr('val') == card_val){
+			var temp = this.card_data[i];
+			this.card_data[i] = this.card_data[this.card_used_num]; 
+			this.card_data[this.card_used_num] = temp;
+			return this.card_data[this.card_used_num++];
+		}
+	}
+	return null;
 };

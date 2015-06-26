@@ -30,7 +30,6 @@ game_player_wrapper.prototype.init = function(username,sid,pos){
     this.win_multiple = 0;
     this.flag_9lbd = false;
     this.flag_13y = false;
-    this.card_group_chow = [];
     this.card_group_pong = [];
     this.card_group_kong = [];
     //  13 cards
@@ -114,7 +113,9 @@ game_player_wrapper.prototype.pack_card_list_hand_data = function(){
     }
     var data = {
         uid:this.uid,
+        username:this.username,
         sid:this.sid,
+        pos:this.pos,
         card_list_hand:card_list_hand_data
     };
     return data;
@@ -163,13 +164,28 @@ game_player_wrapper.prototype.check_kong = function(card_type,card_val){
     if(card_list_kong_length != 0){
         if(card_list_kong_length >= 3){
             for(var i = 0; i < card_list_kong_length - 2; ++i){
-                if(this.card_list_hand[card_type][i].get_attr('val') == card_val && this.card_list_hand[card_type][i + 1].get_attr('val') == card_val && this.card_list_hand[card_type][i + 2].get_attr('val') == card_val){
+                if(this.card_list_hand[card_type][i].get_attr('val') == card_val &&
+                    this.card_list_hand[card_type][i + 1].get_attr('val') == card_val &&
+                    this.card_list_hand[card_type][i + 2].get_attr('val') == card_val){
                     var __object_card = object_template.create_object_card();
                     __object_card.set_attr('type',card_type);
                     __object_card.set_attr('val',card_val);
                     this.card_group_kong.push(__object_card);
                     break;
                 }
+            }
+        }
+    }
+    if(this.card_group_pong != 0) {
+        for (i = 0; i < this.card_group_pong.length - 2; ++i) {
+            if (this.card_group_pong[i].get_attr('val') == card_val &&
+                this.card_group_pong[i + 1].get_attr('val') == card_val &&
+                this.card_group_pong[i + 2].get_attr('val') == card_val) {
+                _object_card = object_template.create_object_card();
+                __object_card.set_attr('type', card_type);
+                __object_card.set_attr('val', card_val);
+                this.card_group_kong.push(__object_card);
+                break;
             }
         }
     }
