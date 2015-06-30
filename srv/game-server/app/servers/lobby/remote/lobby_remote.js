@@ -66,6 +66,16 @@ lobby_remote.prototype.region_list = function(uid, sid, name, cb) {
 
 lobby_remote.prototype.enter_game = function(lid,rid,tid,username,sid,cb) {
     var lobby_manager = pomelo.app.get('lobby_manager');
+    if(-1 == lid){
+        lid = lobby_manager.get_available_lid();
+    }
+    if(-1 == rid){
+        rid = lobby_manager.get_available_rid(lid);
+    }
+    if(-1 == tid){
+        tid = lobby_manager.get_available_tid(lid,rid);
+    }
+
     lobby_manager.enter_game(lid,rid,tid,username,sid,cb);
     var uid = username + '*';
     pomelo.app.get('sessions_wrapper').add(uid,lid,rid,tid);
@@ -175,4 +185,17 @@ lobby_remote.prototype.action_answer = function(username,action,cb){
     var rid = sessions_wrapper.get_rid(uid);
     var tid = sessions_wrapper.get_tid(uid);
     pomelo.app.rpc.mahjong.mahjong_remote.action_answer(null,username,tid,action,cb);
+};
+
+lobby_remote.prototype.game_over = function(username){
+    var uid = username + '*';
+    var sessions_wrapper = pomelo.app.get('sessions_wrapper');
+    var lid = sessions_wrapper.get_lid(uid);
+    var rid = sessions_wrapper.get_rid(uid);
+    var tid = sessions_wrapper.get_tid(uid);
+    pomelo.app.get('lobby_manager').game_over(lid,rid,tid);
+    //  stop tick
+    pomelo.app.rpc.mahjong.mahjong_remote.game_over(null,tid,function(){
+
+    });
 };

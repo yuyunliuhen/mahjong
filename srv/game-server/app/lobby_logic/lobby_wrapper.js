@@ -4,6 +4,7 @@
 
 var json_game_region = require('../../config/game_region');
 var region_wrapper = require('./region_wrapper');
+var consts = require('../util/consts');
 //  one lobby information
 var lobby_wrapper = function(){
     this.region_list = {};
@@ -38,15 +39,21 @@ lobby_wrapper.prototype.enter_lobby = function(){
 };
 
 lobby_wrapper.prototype.enter_room = function(rid){
-    this.region_list[rid].enter_room();
+    if(this.region_list[rid]) {
+        this.region_list[rid].enter_room();
+    }
 };
 
 lobby_wrapper.prototype.enter_game = function(rid,tid,username,sid,cb){
-    this.region_list[rid].enter_game(username,sid,tid,cb);
+    if(this.region_list[rid]) {
+        this.region_list[rid].enter_game(username, sid, tid, cb);
+    }
 };
 
 lobby_wrapper.prototype.leave_game = function(rid,tid,username,sid,cb){
-    this.region_list[rid].leave_game(username,sid,tid,cb);
+    if(this.region_list[rid]) {
+        this.region_list[rid].leave_game(username, sid, tid, cb);
+    }
 };
 
 lobby_wrapper.prototype.pack_simple_data = function(){
@@ -56,4 +63,30 @@ lobby_wrapper.prototype.pack_simple_data = function(){
         lobby_data.push(region_data);
     }
     return lobby_data;
+};
+
+lobby_wrapper.prototype.get_available_rid = function(){
+    for(var i = 0; i < json_game_region.length; ++i){
+        var __region_wrapper = this.region_list[json_game_region[i].id];
+        if(__region_wrapper){
+            var online_num = __region_wrapper.get_online_num();
+            if(online_num < consts.MAX_NUM_PLAYER_PER_ROOM){
+                return __region_wrapper.get_rid();
+            }
+        }
+    }
+    return -1;
+};
+
+lobby_wrapper.prototype.get_available_tid = function(rid){
+    if(this.region_list[rid]){
+        return this.region_list[rid].get_available_tid();
+    }
+    return -1;
+};
+
+lobby_wrapper.prototype.game_over = function(rid,tid){
+	if(this.region_list[rid]){   
+		this.region_list[rid].game_over(tid);
+	}
 };

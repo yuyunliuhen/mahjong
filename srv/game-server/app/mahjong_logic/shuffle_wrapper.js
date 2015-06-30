@@ -4,9 +4,6 @@
 var consts = require('../util/consts');
 var object_card = require('../object/object_card');
 var object_template = require('../object/object_template');
-var log4js = require('log4js');
-log4js.configure(require('../../config/log.json'));
-var mahjong_logger = log4js.getLogger('mahjong-logger');
 
 var shuffle_wrapper = function(){
     this.card_data = [];
@@ -68,69 +65,6 @@ shuffle_wrapper.prototype.shuffle = function(){
         var temp = this.card_data[i];
         this.card_data[i] = this.card_data[rand];
         this.card_data[rand] = temp;
-    }
-    //  test win
-    if(0){
-        //  test begin
-        this.card_data[0].set_attr('type',4);
-        this.card_data[0].set_attr('val',2);
-        this.card_data[1].set_attr('type',4);
-        this.card_data[1].set_attr('val',2);
-        this.card_data[2].set_attr('type',2);
-        this.card_data[2].set_attr('val',1);
-        this.card_data[3].set_attr('type',2);
-        this.card_data[3].set_attr('val',2);
-        this.card_data[4].set_attr('type',2);
-        this.card_data[4].set_attr('val',3);
-        this.card_data[5].set_attr('type',2);
-        this.card_data[5].set_attr('val',4);
-        this.card_data[6].set_attr('type',2);
-        this.card_data[6].set_attr('val',5);
-        this.card_data[7].set_attr('type',2);
-        this.card_data[7].set_attr('val',6);
-        this.card_data[8].set_attr('type',2);
-        this.card_data[8].set_attr('val',7);
-        this.card_data[9].set_attr('type',2);
-        this.card_data[9].set_attr('val',8);
-        this.card_data[10].set_attr('type',2);
-        this.card_data[10].set_attr('val',9);
-        this.card_data[11].set_attr('type',3);
-        this.card_data[11].set_attr('val',3);
-        this.card_data[12].set_attr('type',3);
-        this.card_data[12].set_attr('val',4);
-        //  test end
-    }
-
-    //  test pong
-    if(0){
-        //  test begin
-        this.card_data[0].set_attr('type',4);
-        this.card_data[0].set_attr('val',2);
-        this.card_data[1].set_attr('type',4);
-        this.card_data[1].set_attr('val',3);
-        this.card_data[2].set_attr('type',4);
-        this.card_data[2].set_attr('val',2);
-        this.card_data[3].set_attr('type',2);
-        this.card_data[3].set_attr('val',2);
-        this.card_data[4].set_attr('type',2);
-        this.card_data[4].set_attr('val',2);
-        this.card_data[5].set_attr('type',2);
-        this.card_data[5].set_attr('val',2);
-        this.card_data[6].set_attr('type',2);
-        this.card_data[6].set_attr('val',5);
-        this.card_data[7].set_attr('type',2);
-        this.card_data[7].set_attr('val',5);
-        this.card_data[8].set_attr('type',2);
-        this.card_data[8].set_attr('val',5);
-        this.card_data[9].set_attr('type',2);
-        this.card_data[9].set_attr('val',7);
-        this.card_data[10].set_attr('type',2);
-        this.card_data[10].set_attr('val',8);
-        this.card_data[11].set_attr('type',3);
-        this.card_data[11].set_attr('val',3);
-        this.card_data[12].set_attr('type',3);
-        this.card_data[12].set_attr('val',4);
-        //  test end
     }
     this.card_draw_num_index = this.card_data.length - 1;
 };

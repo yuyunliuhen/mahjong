@@ -40,6 +40,30 @@
 	}
 }
 
+###获取任务奖励
+发送
+{
+	"msg_id":12,
+	"username":"",
+	"mission_id":1,
+}
+返回
+{
+	"msg_id":12,
+	"success":1
+}
+
+###获取任务数据
+发送
+{
+	"msg_id":13,
+	"username":""
+}
+返回
+{
+	"msg_id":13,	"mission_data\":[{\"id\":1,\"finished_num\":1,\"status\":1},{\"id\":2,\"finished_num\":0,\"status\":0},{\"id\":3,\"finished_num\":0,\"status\":0},{\"id\":4,\"finished_num\":0,\"status\":0},{\"id\":5,\"finished_num\":0,\"status\":0},{\"id\":6,\"finished_num\":0,\"status\":0}]
+}
+
 
 ### 找庄通知
 {
@@ -123,3 +147,6 @@ cur_player_index：当前出牌玩家索引
 	"msg_id":1012，
 	"player_index":1,
 }
+
+
+

@@ -19,9 +19,10 @@ game_logic_manager.prototype.start_new_game = function(tid,join_list,cb){
 game_logic_manager.prototype.game_over = function(tid,cb){
     for(var v in this.table_game_logic){
         if(v == tid){
-            this.table_game_logic[v].game_over(cb);
+            delete this.table_game_logic[v];
         }
     }
+    cb();
 };
 
 game_logic_manager.prototype.discard = function(username,tid,card_type,card_val,cb){

@@ -3,6 +3,7 @@ var user_wrapper = require('./app/user/user_wrapper');
 var sessions_wrapper = require('./app/lobby_logic/sessions_wrapper');
 var lobby_manager = require('./app/lobby_logic/lobby_manager');
 var game_logic_manager = require('./app/mahjong_logic/game_logic_manager');
+var mission_wrapper = require('./app/mission/mission_wrapper');
 /**
  * Init app for client.
  */
@@ -26,6 +27,9 @@ app.configure('production|development', 'connector', function(){
   var __user_wrapper = new user_wrapper();
   app.set('user_wrapper',__user_wrapper);
 
+  var __mission_wrapper = new mission_wrapper();
+  app.set('mission_wrapper',__mission_wrapper);
+
 });
 
 app.configure('production|development', 'lobby', function(){
@@ -40,6 +44,9 @@ app.configure('production|development', 'lobby', function(){
 app.configure('production|development', 'mahjong', function(){
   var __game_logic_manager = new game_logic_manager();
   app.set('game_logic_manager',__game_logic_manager);
+
+  var __mission_wrapper = new mission_wrapper();
+  app.set('mission_wrapper',__mission_wrapper);
 
 });
 

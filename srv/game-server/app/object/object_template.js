@@ -5,6 +5,7 @@ var data = require('./data');
 var object_user = require('./object_user');
 var object_card = require('./object_card');
 var object_card_chow = require('./object_card_chow');
+var pomelo = require('pomelo');
 
 var object_template = function(){
 
@@ -32,6 +33,11 @@ object_template.create_object_user = function(){
     __object_user.reg_attr('total_count',0);
     __object_user.reg_attr('win_count',0);
     __object_user.reg_attr('level',1);
+    __object_user.reg_attr('last_login_time',Date.now());
+    //  init mission data
+    var mission_data = [];
+    mission_data = pomelo.app.get('mission_wrapper').init();
+    __object_user.reg_attr('mission_data',mission_data);
     console.log("%j",__object_user);
     return __object_user;
 };

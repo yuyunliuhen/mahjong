@@ -38,7 +38,9 @@ lobby_wrapper.prototype.enter_room = function(lid,rid){
 };
 
 lobby_manager.prototype.enter_game = function(lid,rid,tid,username,sid,cb){
-    this.lobby_list[lid].enter_game(rid,tid,username,sid,cb);
+    if(this.lobby_list[lid]) {
+        this.lobby_list[lid].enter_game(rid, tid, username, sid, cb);
+    }
 };
 
 lobby_manager.prototype.leave_game = function(lid,rid,tid,username,sid,cb){
@@ -53,4 +55,27 @@ lobby_manager.prototype.pack_all_lobby_simple_data = function(){
         array_lobby_info.push(this.lobby_list[v].pack_simple_data());
     }
     return array_lobby_info;
+};
+
+lobby_manager.prototype.get_available_lid = function(){
+    return 1;
+};
+
+lobby_manager.prototype.get_available_rid = function(lid){
+    if(this.lobby_list[lid]) {
+        return this.lobby_list[lid].get_available_rid();
+    }
+    return -1;
+};
+
+lobby_manager.prototype.get_available_tid = function(lid,rid){
+    if(this.lobby_list[lid]) {
+        return this.lobby_list[lid].get_available_tid(rid);
+    }
+};
+
+lobby_manager.prototype.game_over = function(lid,rid,tid){
+	if(this.lobby_list[lid]){
+		this.lobby_list[lid].game_over(rid,tid);
+	}
 };

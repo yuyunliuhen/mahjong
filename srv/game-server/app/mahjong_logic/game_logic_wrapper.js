@@ -60,6 +60,7 @@ game_logic_wrapper.prototype.get_player_count = function(){
 
 game_logic_wrapper.prototype.start_game = function(joiner_list,cb){
     this.shuffle = new shuffle_wrapper();
+	this.player_list = [];
     this.shuffle.set_card_draw_num(14);
     this.shuffle.shuffle();
     joiner_list = JSON.parse(joiner_list);
@@ -68,7 +69,7 @@ game_logic_wrapper.prototype.start_game = function(joiner_list,cb){
         var __game_player_wrapper = new game_player_wrapper();
         __game_player_wrapper.init(joiner_list[i].username,joiner_list[i].sid,joiner_list[i].pos);
 		//	test begin
-		if(0 == i){		
+		if(0 == i){
 			var tmp_card = this.shuffle.get_card_specified(4,2);
 			__game_player_wrapper.add_card(4,2);
 			var tmp_card = this.shuffle.get_card_specified(4,2);
@@ -194,7 +195,11 @@ game_logic_wrapper.prototype.tick = function(){
             }
             break;
         }
+        case consts.GAME_STATUS.GAME_STATUS_GAME_OVER:{
+            break;
+        }
     }
+    mahjong_logger.debug("game_status :" + this.game_status);
 };
 
 game_logic_wrapper.prototype.notice_find_banker = function(){
@@ -255,6 +260,7 @@ game_logic_wrapper.prototype.notice_remain_time = function(){
     var res_msg = {};
     res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_REMAIN_TIME;
     res_msg.remain_time = this.wait_time  - 1;
+    //mahjong_logger.debug("remain_time " + res_msg.remain_time);
     pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,this.get_player_names(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
         //  do nothing
     });
@@ -286,7 +292,10 @@ game_logic_wrapper.prototype.notice_draw_card = function () {
         pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,this.get_player_names(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
             //  do nothing
         });
-        this.game_status = consts.GAME_STATUS.GAME_STATUS_OVER;
+        this.game_status = consts.GAME_STATUS.GAME_STATUS_GAME_OVER;
+		//	clear lobby data
+		var cur_player = this.player_list[this.cur_player_index];
+		pomelo.app.rpc.lobby.lobby_remote.game_over(null,cur_player.get_username(),cur_player.get_username());
     }
 
     //  check win
@@ -456,7 +465,6 @@ game_logic_wrapper.prototype.check_all_card = function(){
                 this.pong_notice(tmp_player_index,action);
             }
             this.reset_wait_time();
-
             return;
         }
     }
@@ -511,7 +519,7 @@ game_logic_wrapper.prototype.pong_notice = function(tmp_player_index,action){
     res_msg.card_type = parseInt(this.last_card.get_attr('type'));
     res_msg.card_val= parseInt(this.last_card.get_attr('val'));
     this.game_status = consts.GAME_STATUS.GAME_STATUS_QUESTION;
-    mahjong_logger.debug("check pong---last card: %d,%d; %j",parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')),this.player_list[tmp_player_index].pack_card_list_hand_data());
+    mahjong_logger.debug("pong notice---last card: %d,%d; %j",parseInt(this.last_card.get_attr('type')),parseInt(this.last_card.get_attr('val')),this.player_list[tmp_player_index].pack_card_list_hand_data());
     pomelo.app.rpc.lobby.lobby_remote.game_server_broadcast(null,this.get_player_names(),this.player_list[this.cur_player_index].get_sid(),res_msg,function(){
         //  do nothing
     });
@@ -650,7 +658,7 @@ game_logic_wrapper.prototype.action_answer = function(username,action,cb){
             var res_msg = {};
             res_msg.msg_id = consts.TYPE_NOTICE.TYPE_NOTICE_CARD_WIN;
             res_msg.player_index = this.get_player_index_by_name(username);
-            this.game_status = consts.GAME_STATUS.GAME_STATUS_OVER;
+            this.game_status = consts.GAME_STATUS.GAME_STATUS_GAME_OVER;
             var player_card_list_hand_array = [];
             for(var i = 0; i < this.player_list.length; ++i){
                 var __game_player_wrapper = this.player_list[i];

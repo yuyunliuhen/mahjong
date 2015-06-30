@@ -9,7 +9,6 @@ log4js.configure(require('../../config/log.json'));
 var lobby_logger = log4js.getLogger('lobby-logger');
 
 var table_wrapper = function(){
-    this.cur_num = 0;
     this.tid = 0;
     this.rid = 0;
     this.lid = 0;
@@ -36,6 +35,9 @@ table_wrapper.prototype.init = function(lid,rid,tid){
     this.tid = tid;
 };
 
+table_wrapper.prototype.clear = function(){
+	this.joiner_list = [];
+};
 table_wrapper.prototype.enter_game = function(username,sid,cb){
     var self = this;
     for(var i = 0; i < this.joiner_list.length; ++i){
@@ -69,7 +71,7 @@ table_wrapper.prototype.enter_game = function(username,sid,cb){
             lobby_logger.debug("start_game : " + player_card_list_hand_array);
         });
     }
-    cb(joiner_data);
+    cb(joiner_data,this.lid,this.rid,this.tid);
     return pos_index;
 };
 
@@ -191,4 +193,13 @@ table_wrapper.prototype.find_pos = function(username){
         }
     }
     return -1;
+};
+
+table_wrapper.prototype.get_num_player = function(){
+    return this.joiner_list.length;
+};
+
+
+table_wrapper.prototype.get_tid = function(){
+    return this.tid;
 };

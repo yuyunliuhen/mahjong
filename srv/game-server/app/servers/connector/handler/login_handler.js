@@ -6,7 +6,7 @@ var consts = require('../../../util/consts');
 var pomelo = require('pomelo');
 var user_wrapper = require('../../../user/user_wrapper');
 var object_template = require('../../../object/object_template');
-var json_lobby_list = require('../../../../config/lobby_list');
+var async = require('async');
 
 message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_LOGIN, function(msg, session, next) {
     var username = msg.username;
@@ -32,13 +32,16 @@ message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_LOGIN, function(msg, session, next)
                 object_user = object_template.create_object('object_user');
                 object_user.init(username);
                 user_data = object_user.json_2_string();
-                pomelo.app.get('user_wrapper').save_db(username,user_data,function(reply){
-                    //  no waiting
-                });
             }
             pomelo.app.rpc.lobby.lobby_remote.pack_all_lobby_simple_data(session, function(array_lobby_data){
                 res_msg.user_data = user_data;
                 res_msg.array_lobby_data = array_lobby_data;
+                //  reset everyday mission
+                user_data = pomelo.app.get('mission_wrapper').check_everyday_mission(user_data);
+                user_data = pomelo.app.get('mission_wrapper').trigger(user_data,consts.MISSION_ID.MISSION_ID_LOGIN_AWARD);
+                pomelo.app.get('user_wrapper').save_db(username,user_data,function(reply){
+                    //  no waiting
+                });
                 next(null, res_msg);
             });
         });
