@@ -7,9 +7,13 @@ var pomelo = require('pomelo');
 var user_wrapper = require('../../../user/user_wrapper');
 var object_template = require('../../../object/object_template');
 var async = require('async');
+var uuid = require('node-uuid');
 
 message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_LOGIN, function(msg, session, next) {
     var username = msg.username;
+    if(username == "test" || username == ''){
+        username = uuid.v1();
+    }
     var uid = username + '*';
     var sessionService = pomelo.app.get('sessionService');
     session.bind(uid);

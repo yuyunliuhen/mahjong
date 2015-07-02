@@ -115,6 +115,7 @@ module.exports = {
         MISSION_ID_CONTINUE_VICTORIOUS_KING:4,
         MISSION_ID_HAPPY_IN_MAHJONG:5,
         MISSION_ID_FLOWERS_WITH_KONG:6
-    }
+    },
+    USER_KEY:"user_count"
 }
 ;

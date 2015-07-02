@@ -65,7 +65,7 @@ mission_wrapper.prototype.check_everyday_mission = function (user_data) {
         if (today != last_login_day) {
             var mission_data = json_user_data.mission_data;
             for (var i = 0; i < mission_data.length; ++i) {
-                var mission_config = this.get_mission_config(mission_id);
+                var mission_config = this.get_mission_config(mission_data[i].id);
                 if (mission_config) {
                     mission_data.finished_num = 0;
                     mission_data.status = consts.MISSION_STATUS.MISSION_STATUS_UNFINISHED;

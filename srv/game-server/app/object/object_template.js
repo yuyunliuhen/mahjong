@@ -27,7 +27,7 @@ object_template.create_object_user = function(){
     var __object_user = new object_user();
     __object_user.reg_attr('id',"123456");
     __object_user.reg_attr('username',"");
-    __object_user.reg_attr('nickname',"");
+    __object_user.reg_attr('nickname',"nickname");
     __object_user.reg_attr('sex',0);
     __object_user.reg_attr('gold',10000);
     __object_user.reg_attr('total_count',0);

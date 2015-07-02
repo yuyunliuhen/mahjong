@@ -37,6 +37,9 @@ table_wrapper.prototype.init = function(lid,rid,tid){
 
 table_wrapper.prototype.clear = function(){
 	this.joiner_list = [];
+    for(var i = 0; i < this.pos.length; ++i){
+        this.pos[i] = '';
+    }
 };
 table_wrapper.prototype.enter_game = function(username,sid,cb){
     var self = this;
@@ -95,6 +98,7 @@ table_wrapper.prototype.leave_game = function(username,sid){
 };
 
 table_wrapper.prototype.enter_game_notice = function(username,pos_index){
+    var self = this;
     var channelService = pomelo.app.get('channelService');
     var channel_name = consts.GLOBAL_SESSION;
     var channel = channelService.getChannel(channel_name, false);
@@ -106,24 +110,29 @@ table_wrapper.prototype.enter_game_notice = function(username,pos_index){
         from: username,
         target: username
     };
-    for(var i = 0; i < this.joiner_list.length; ++i){
-        var player_wrapper = this.joiner_list[i];
-        if(player_wrapper){
-            if(player_wrapper.get_username() != username)
-            {
-                var tuid = player_wrapper.get_uid();
-                var tsid = channel.getMember(tuid)['sid'];
-                param.target = player_wrapper.get_username();
-                res_msg.pos = pos_index;
-                console.log(param);
-                channelService.pushMessageByUids(param, [{
-                    uid: tuid,
-                    sid: tsid
-                }]);
-                lobby_logger.debug("enter_game_notice : %j",param);
+    pomelo.app.rpc.connector.connector_remote.get_user_data(null,username,function(user_data){
+        user_data = JSON.parse(user_data);
+        param.nickname = user_data.nickname;
+        param.gold = user_data.gold;
+        for(var i = 0; i < self.joiner_list.length; ++i){
+            var player_wrapper = self.joiner_list[i];
+            if(player_wrapper){
+                if(player_wrapper.get_username() != username)
+                {
+                    var tuid = player_wrapper.get_uid();
+                    var tsid = channel.getMember(tuid)['sid'];
+                    param.target = player_wrapper.get_username();
+                    res_msg.pos = pos_index;
+                    console.log(param);
+                    channelService.pushMessageByUids(param, [{
+                        uid: tuid,
+                        sid: tsid
+                    }]);
+                    lobby_logger.debug("enter_game_notice : %j",param);
+                }
             }
         }
-    }
+    });
 };
 
 table_wrapper.prototype.start_game_notice = function(player_card_list_hand_array){

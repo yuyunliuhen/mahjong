@@ -61,7 +61,7 @@ game_logic_wrapper.prototype.get_player_count = function(){
 game_logic_wrapper.prototype.start_game = function(joiner_list,cb){
     this.shuffle = new shuffle_wrapper();
 	this.player_list = [];
-    this.shuffle.set_card_draw_num(14);
+    this.shuffle.set_card_draw_num(14*4);
     this.shuffle.shuffle();
     joiner_list = JSON.parse(joiner_list);
     var player_card_list_hand_array = [];
