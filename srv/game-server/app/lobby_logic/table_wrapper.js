@@ -208,7 +208,6 @@ table_wrapper.prototype.get_num_player = function(){
     return this.joiner_list.length;
 };
 
-
 table_wrapper.prototype.get_tid = function(){
     return this.tid;
 };

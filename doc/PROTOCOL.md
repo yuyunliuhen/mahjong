@@ -63,6 +63,17 @@
 {
 	"msg_id":13,	"mission_data\":[{\"id\":1,\"finished_num\":1,\"status\":1},{\"id\":2,\"finished_num\":0,\"status\":0},{\"id\":3,\"finished_num\":0,\"status\":0},{\"id\":4,\"finished_num\":0,\"status\":0},{\"id\":5,\"finished_num\":0,\"status\":0},{\"id\":6,\"finished_num\":0,\"status\":0}]
 }
+###离开游戏
+发送
+{
+	"msg_id":14,
+	"username":""
+}
+返回
+{
+	"msg_id":12,
+	"success":1
+}
 
 
 ### 找庄通知

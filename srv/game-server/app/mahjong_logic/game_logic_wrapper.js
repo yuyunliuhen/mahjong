@@ -45,9 +45,9 @@ game_logic_wrapper.prototype.add_player = function(useranme){
 
 };
 
-game_logic_wrapper.prototype.del_player = function(useranme){
+game_logic_wrapper.prototype.del_player = function(username){
     for(var i = 0; i < this.player_list.length; ++i){
-        if(useranme == this.player_list[i].get_username())
+        if(username == this.player_list[i].get_username())
         {
             this.player_list[i].leave_game();
         }

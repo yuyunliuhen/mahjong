@@ -8,6 +8,9 @@ var user_wrapper = require('../../../user/user_wrapper');
 var object_template = require('../../../object/object_template');
 var async = require('async');
 var uuid = require('node-uuid');
+var log4js = require('log4js');
+log4js.configure(require('../../../../config/log.json'));
+var connector_logger = log4js.getLogger('connector-logger');
 
 message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_LOGIN, function(msg, session, next) {
     var username = msg.username;
@@ -46,6 +49,7 @@ message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_LOGIN, function(msg, session, next)
                 pomelo.app.get('user_wrapper').save_db(username,user_data,function(reply){
                     //  no waiting
                 });
+                connector_logger.debug(res_msg);
                 next(null, res_msg);
             });
         });

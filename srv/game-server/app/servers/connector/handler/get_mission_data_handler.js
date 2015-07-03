@@ -4,6 +4,9 @@
 var message_mgr = require('../../../util/message_mgr');
 var consts = require('../../../util/consts');
 var pomelo = require('pomelo');
+var log4js = require('log4js');
+log4js.configure(require('../../../../config/log.json'));
+var connector_logger = log4js.getLogger('connector-logger');
 
 message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_GET_MISSION_DATA, function(msg, session, next) {
     var username = msg.username;
@@ -13,6 +16,7 @@ message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_GET_MISSION_DATA, function(msg, ses
         if(user_data){
             var json_user_data = JSON.parse(user_data);
             res_msg.mission_data = JSON.stringify(json_user_data.mission_data);
+            connector_logger.debug(res_msg.mission_data);
         }
         next(null, res_msg);
     });

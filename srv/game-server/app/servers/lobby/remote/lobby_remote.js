@@ -43,7 +43,6 @@ lobby_remote.prototype.get = function(name, flag) {
 
 lobby_remote.prototype.kick = function(uid, sid, name, cb) {
     this.leave_game(uid,sid,function(){});
-
     var channel = this.channelService.getChannel(name, false);
     // leave channel
     if( !! channel) {
@@ -55,6 +54,8 @@ lobby_remote.prototype.kick = function(uid, sid, name, cb) {
         user: username
     };
     channel.pushMessage(param);
+
+    pomelo.app.get('sessions_wrapper').remove(uid);
     cb();
 };
 
@@ -92,7 +93,6 @@ lobby_remote.prototype.leave_game = function(uid,sid,cb) {
     pomelo.app.rpc.mahjong.mahjong_remote.leave_game(null,username,tid,function(){
 
     });
-    sessions_wrapper.remove(uid);
 };
 
 lobby_remote.prototype.pack_all_lobby_simple_data = function(cb) {

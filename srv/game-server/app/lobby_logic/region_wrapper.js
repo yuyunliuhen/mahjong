@@ -113,4 +113,3 @@ region_wrapper.prototype.get_available_tid = function(){
 region_wrapper.prototype.game_over = function(tid){
 	this.table_list[tid].clear();
 };
-
