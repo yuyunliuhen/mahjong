@@ -5,7 +5,6 @@ var message_mgr = require('../../../util/message_mgr');
 var consts = require('../../../util/consts');
 var pomelo = require('pomelo');
 var async = require('async');
-var redis_user_wrapper = require('../../../nosql/redis_user_wrapper');
 
 message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_ENTER_GAME, function(msg, session, next) {
     var lid = parseInt(msg.lid);
@@ -14,6 +13,7 @@ message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_ENTER_GAME, function(msg, session, 
     var username = msg.username;
     var res_msg = {};
     res_msg.msg_id = msg.msg_id;
+    var user_wrapper = pomelo.app.get('user_wrapper');
     pomelo.app.rpc.lobby.lobby_remote.enter_game(session, lid, rid,tid, username,pomelo.app.get('serverId'), function(joiner_data,lid,rid,tid){
         if(joiner_data){
             res_msg.joiner_data = joiner_data;
@@ -27,7 +27,7 @@ message_mgr.handler(consts.TYPE_MSG.TYPE_MSG_ENTER_GAME, function(msg, session, 
             function (callback) {
                 async.waterfall([
                         function (callback) {
-                            redis_user_wrapper.get_user(res_msg.joiner_data[count][0], function (user_data) {
+                            user_wrapper.get_user(res_msg.joiner_data[count][0], function (user_data) {
                                 callback(null, user_data);
                             });
                         },

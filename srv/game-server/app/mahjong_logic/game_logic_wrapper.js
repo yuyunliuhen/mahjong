@@ -12,7 +12,6 @@ var mahjong_logger = log4js.getLogger('mahjong-logger');
 
 //  one bout of mahjong
 var game_logic_wrapper = function(){
-    this.table_id = 0;
     this.game_type = 0;
     this.game_status = 0;
     this.player_list = [];
@@ -25,25 +24,6 @@ var game_logic_wrapper = function(){
 };
 
 module.exports = game_logic_wrapper;
-
-/**
- * set room of table' s id
- * @param table_id
- */
-game_logic_wrapper.prototype.set_table_id = function(table_id){
-    this.table_id = table_id;
-};
-
-/**
- * get room of table' s id
- */
-game_logic_wrapper.prototype.get_table_id = function(){
-    this.table_id = table_id;
-};
-
-game_logic_wrapper.prototype.add_player = function(useranme){
-
-};
 
 game_logic_wrapper.prototype.del_player = function(username){
     for(var i = 0; i < this.player_list.length; ++i){
@@ -140,9 +120,9 @@ game_logic_wrapper.prototype.tick = function(){
         }
         case consts.GAME_STATUS.GAME_STATUS_RUNNING:{
             if(this.wait_time <= 0){
-                this.reset_wait_time();
                 if(!this.player_list[this.cur_player_index].get_hosting()){
                     this.game_status = consts.GAME_STATUS.GAME_STATUS_WAITING_DISCARD;
+                    this.reset_hosting_wait_time();
                 }else{
                     this.notice_discard();
                     this.check_all_card();
@@ -527,6 +507,10 @@ game_logic_wrapper.prototype.pong_notice = function(tmp_player_index,action){
 
 game_logic_wrapper.prototype.reset_wait_time = function(){
     this.wait_time = consts.MAX_WAITING_TIME;
+};
+
+game_logic_wrapper.prototype.reset_hosting_wait_time = function(){
+    this.wait_time = consts.MAX_HOSTING_WAITING_TIME;
 };
 
 game_logic_wrapper.prototype.leave_game = function(username,cb){

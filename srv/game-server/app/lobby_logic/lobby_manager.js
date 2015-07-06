@@ -29,14 +29,6 @@ lobby_manager.prototype.get_region_list = function(lid){
     return [];
 };
 
-lobby_wrapper.prototype.enter_lobby = function(lid){
-    this.lobby_list[lid].enter_lobby();
-};
-
-lobby_wrapper.prototype.enter_room = function(lid,rid){
-    this.lobby_list[lid].enter_room(rid);
-};
-
 lobby_manager.prototype.enter_game = function(lid,rid,tid,username,sid,cb){
     if(this.lobby_list[lid]) {
         this.lobby_list[lid].enter_game(rid, tid, username, sid, cb);

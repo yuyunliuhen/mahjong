@@ -169,15 +169,13 @@ table_wrapper.prototype.pack_data = function() {
     return {
       "tid":this.tid,
       "table_name":this.table_name,
-      "hoster":this.hoster,
-      "cur_num":this.joiner_list.length
+      "hoster":this.hoster
     };
 };
 
 table_wrapper.prototype.pack_simple_data = function() {
     return {
-        "tid":this.tid,
-        "cur_num":this.joiner_list.length
+        "tid":this.tid
     };
 };
 

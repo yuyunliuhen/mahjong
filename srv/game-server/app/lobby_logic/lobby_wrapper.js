@@ -34,16 +34,6 @@ lobby_wrapper.prototype.pack_data = function(){
     return lobby_data;
 };
 
-lobby_wrapper.prototype.enter_lobby = function(){
-    ++this.online_num;
-};
-
-lobby_wrapper.prototype.enter_room = function(rid){
-    if(this.region_list[rid]) {
-        this.region_list[rid].enter_room();
-    }
-};
-
 lobby_wrapper.prototype.enter_game = function(rid,tid,username,sid,cb){
     if(this.region_list[rid]) {
         this.region_list[rid].enter_game(username, sid, tid, cb);

@@ -5,7 +5,6 @@ var table_wrapper = require('./table_wrapper');
 var consts = require('../util/consts');
 var region_wrapper = function(){
     this.online_num = 0;
-    this.users = [];
     this.table_list = {};
 };
 
@@ -57,24 +56,11 @@ region_wrapper.prototype.pack_simple_data = function(){
     };
 };
 
-region_wrapper.prototype.enter_room = function(username){
-    ++this.online_num;
-    this.users.push(username);
-};
-
-region_wrapper.prototype.leave_room = function(username){
-    --this.online_num;
-   for(var i = 0; i < this.users.length; ++i){
-       if(username == this.uses[i]){
-           this.uses.remove(i);
-       }
-   }
-};
-
 region_wrapper.prototype.enter_game = function (username, sid, tid, cb) {
     var table_wrapper = this.table_list[tid];
     if (table_wrapper) {
         if (table_wrapper.joiner_list.length < consts.MAX_NUM_PLAYER_PER_TABLE) {
+            this.online_num++;
             var pos_index = table_wrapper.enter_game(username, sid,cb);
             if (-1 != pos_index) {
                 table_wrapper.enter_game_notice(username,pos_index);
@@ -85,6 +71,7 @@ region_wrapper.prototype.enter_game = function (username, sid, tid, cb) {
 
 region_wrapper.prototype.leave_game = function(username,sid,tid,cb){
     var success = 0;
+    this.online_num--;
     this.table_list[tid].leave_game(username,sid);
     cb(success);
 };
