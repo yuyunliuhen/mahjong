@@ -199,3 +199,12 @@ lobby_remote.prototype.game_over = function(username){
 
     });
 };
+
+lobby_remote.prototype.ready_hand_cards = function(username,cards){
+    var uid = username + '*';
+    var sessions_wrapper = pomelo.app.get('sessions_wrapper');
+    var lid = sessions_wrapper.get_lid(uid);
+    var rid = sessions_wrapper.get_rid(uid);
+    var tid = sessions_wrapper.get_tid(uid);
+    pomelo.app.rpc.mahjong.mahjong_remote.ready_hand_cards(null,username,tid,cards);
+};

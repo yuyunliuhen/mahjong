@@ -5,6 +5,7 @@ var consts = require('../util/consts');
 var object_template = require('../object/object_template');
 var game_player_wrapper = function(){
     this.status = 0;
+    this.ready_hand_cards = [];
 };
 
 module.exports = game_player_wrapper;
@@ -1038,7 +1039,7 @@ game_player_wrapper.prototype.check_cards_8 = function(val1,val2,val3,val4,val5,
     }
     //  the val4,val5 is pairs
     if(this.check_cards_aa(val4,val5)) {
-        if(this.check_cards_3(val1,val2,val3) && this.check_cards_3(val6,val7,val8)) {
+        if(this.check_cards_6(val1,val2,val3,val6,val7,val8)) {
             return true;
         }
     }
@@ -1173,4 +1174,12 @@ game_player_wrapper.prototype.set_cards_win = function(cards_win){
 
 game_player_wrapper.prototype.get_cards_win = function(){
     return this.cards_win;
+};
+
+game_player_wrapper.prototype.set_ready_hand_cards = function(ready_hand_cards){
+    this.ready_hand_cards = ready_hand_cards;
+};
+
+game_player_wrapper.prototype.get_ready_hand_cards = function(ready_hand_cards){
+    return this.ready_hand_cards ;
 };

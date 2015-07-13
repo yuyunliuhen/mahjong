@@ -74,3 +74,11 @@ game_logic_manager.prototype.action_answer = function(username,tid,action,cb){
         }
     }
 };
+
+game_logic_manager.prototype.ready_hand_cards = function(username,tid,cards){
+    for(var v in this.table_game_logic){
+        if(v == tid){
+            this.table_game_logic[v].ready_hand_cards(username,cards);
+        }
+    }
+};

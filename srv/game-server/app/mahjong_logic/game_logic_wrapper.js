@@ -49,7 +49,7 @@ game_logic_wrapper.prototype.start_game = function(joiner_list,cb){
         var __game_player_wrapper = new game_player_wrapper();
         __game_player_wrapper.init(joiner_list[i].username,joiner_list[i].sid,joiner_list[i].pos);
 		//	test begin
-		if(10 == i){
+		if(0 == i){
 			var tmp_card = this.shuffle.get_card_specified(4,2);
 			__game_player_wrapper.add_card(4,2);
 			var tmp_card = this.shuffle.get_card_specified(4,2);
@@ -119,7 +119,11 @@ game_logic_wrapper.prototype.tick = function(){
             break;
         }
         case consts.GAME_STATUS.GAME_STATUS_RUNNING:{
-            if(this.wait_time <= 0){
+            var end_time = 0;
+            if(this.player_list[this.cur_player_index].get_hosting()){
+                end_time = consts.MAX_HOSTING_END_TIME;
+            }
+            if(this.wait_time <= end_time){
                 if(!this.player_list[this.cur_player_index].get_hosting()){
                     this.game_status = consts.GAME_STATUS.GAME_STATUS_WAITING_DISCARD;
                     this.reset_hosting_wait_time();
@@ -677,4 +681,13 @@ game_logic_wrapper.prototype.show_players_card_in_hand = function(param){
         player_card_list_hand_array.push(__game_player_wrapper.pack_card_list_hand_data());
     }
     mahjong_logger.debug("param: %s; %j",param,player_card_list_hand_array);
+};
+
+game_logic_wrapper.prototype.ready_hand_cards = function(username,cards){
+    for(var i = 0; i < this.player_list.length; ++i){
+        if(username == this.player_list[i].get_username())
+        {
+            this.player_list[i].set_ready_hand_cards(cards);
+        }
+    }
 };
